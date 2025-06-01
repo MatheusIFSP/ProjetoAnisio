@@ -34,5 +34,6 @@ export class LivroController {
             message = error.message;
         }
         res.status(404).json({ message });
-    }
+        }
+    }   
 }
