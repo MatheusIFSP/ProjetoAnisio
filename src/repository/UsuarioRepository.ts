@@ -22,10 +22,15 @@ export class UsuarioRepository{
         return this.usuarioList;
     }
 
-      findById( id:number): UsuarioEntity{
-         const index = this.findIndex(id)
-         return this.pessoaList[index]
+    findById( id:number): UsuarioEntity{
+        const index = this.findIndex(id)
+        return this.usuarioList[index]
     }
-
+    private findIndex( id: number): number{
+        const index = this.usuarioList.findIndex(u => u.id == id)
+        if(index == -1){
+            throw new Error("ID não informado não encontrado")
+        }
+        return index
     }
-}
+    }

@@ -1,8 +1,10 @@
 import { UsuarioEntity } from "../model/UsuarioEntity";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
+import { CatalogoRepository } from "../repository/CatalogoRepository";
 
 export class UsuarioService{
-    private usuarioRepository = UsuarioRepository.getInstance()
+    private usuarioRepository = UsuarioRepository.getInstance();
+    private catalogoRepository = CatalogoRepository.getInstance();
 
     validarCPF( cpf: string ){
         if(typeof cpf !== 'string')
@@ -21,16 +23,30 @@ export class UsuarioService{
         return rest(10) === cpfList[9] && rest(11) === cpfList[10]
     }
 
-    validarCategoriaECurso(categoria_id: number, curso_id: number) {
-        const categoria = this.usuarioRepository.findById(categoria_id);
-        const curso = this.usuarioRepository.findById(curso_id);
-
-        if (!categoria) {
+    validarCategoriaECurso(categoria_id: string, curso_id: string) {
+        if (this.catalogoRepository.existeCategoriaUsuario(categoria_id)) {
             throw new Error("Categoria inválida ou inexistente");
         }
-        if (!curso) {
+        if (this.catalogoRepository.existeCurso(curso_id)) {
             throw new Error("Curso inválido ou inexistente");
         }
         return true;
+    }
+
+    verificarCPFduplicado(cpf: string) {
+        const existe = this.usuarioRepository.findAll().some(u => u.cpf === cpf)
+        if (existe) {
+            throw new Error("CPF já cadastrado")
+        }
+    }
+
+    criarUsuario(usuario: UsuarioEntity) {
+        if (!this.validarCPF(usuario.cpf)) {
+            throw new Error("CPF inválido");
+        }
+        this.verificarCPFduplicado(usuario.cpf);
+        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id);
+
+        return this.usuarioRepository.insereUsuario(usuario);
     }
 }

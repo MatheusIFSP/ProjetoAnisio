@@ -22,19 +22,20 @@ export class LivroRepository{
     findByISBN(isbn: string) {
         return this.livroList.find(livro => livro.isbn === isbn);
     }
-    updateByISBN(isbn: string, dados: Partial <LivroEntity>) {
-        const livro = this.findByISBN(isbn);
-        if (!livro) {
-            throw new Error("Livro não encontrado");
-        }
-        Object.assign(livro, dados);
-            return livro;
+    updateById(id: number, dados: Partial<LivroEntity>) {
+        const index = this.findIndex(id);
+        Object.assign(this.livroList[index], dados);
+        return this.livroList[index];
     }
-    deleteByISBN(isbn: string) {
-        const index = this.livroList.findIndex(livro => livro.isbn === isbn);
-        if (index === -1) {
-            throw new Error ("Livro não encontrado");
-        }
+    removeById(id: number) {
+        const index = this.findIndex(id);
         this.livroList.splice(index, 1);
+    }
+    private findIndex( id: number):number{
+        const index = this.livroList.findIndex( l => l.id == id)
+        if(index == -1){
+            throw new Error("ID informado não foi encontrado")
+        }
+        return index
     }
 }

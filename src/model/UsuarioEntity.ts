@@ -3,16 +3,16 @@ export class UsuarioEntity {
     nome: string
     cpf: string
     ativo: boolean
-    categoria_id: number
-    curso_id: number
+    categoria_id: string
+    curso_id: string
 
     constructor(
         id: number | undefined,
         nome: string,
         cpf: string,
-        ativo: boolean,
-        categoria_id: number,
-        curso_id: number
+        ativo: boolean = true,
+        categoria_id: string,
+        curso_id: string
     ){
         this.id = id ?? this.gerarId()
         this.nome = nome
