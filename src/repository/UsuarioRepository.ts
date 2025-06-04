@@ -14,12 +14,12 @@ export class UsuarioRepository{
     }
 
     insereUsuario(usuario: UsuarioEntity) {
-        this.usuarioList.push(usuario);
-        return usuario;
+        this.usuarioList.push(usuario)
+        return usuario
     }
 
     findAll(){
-        return this.usuarioList;
+        return this.usuarioList
     }
 
     findById( id:number): UsuarioEntity{

@@ -4,8 +4,8 @@ export class LivroEntity {
     autor: string
     editora: string
     edicao: string
-    isbn: string
-    categoria_id: number
+    isbn: number
+    categoria_id: string
 
     constructor(
         id: number | undefined,
@@ -13,8 +13,8 @@ export class LivroEntity {
         autor: string,
         editora: string,
         edicao: string,
-        isbn: string,
-        categoria_id: number
+        isbn: number,
+        categoria_id: string
     ){
         this.id = id ?? this.gerarId()
         this.titulo = titulo

@@ -1,11 +1,18 @@
-import { UsuarioEntity } from "../model/UsuarioEntity";
-import { UsuarioRepository } from "../repository/UsuarioRepository";
-import { CatalogoRepository } from "../repository/CatalogoRepository";
+import { UsuarioEntity } from "../model/UsuarioEntity"
+import { UsuarioRepository } from "../repository/UsuarioRepository"
+import { CatalogoRepository } from "../repository/CatalogoRepository"
 
 export class UsuarioService{
-    private usuarioRepository = UsuarioRepository.getInstance();
-    private catalogoRepository = CatalogoRepository.getInstance();
+    private usuarioRepository = UsuarioRepository.getInstance()
+    private catalogoRepository = CatalogoRepository.getInstance()
 
+    listarUsuario(){
+        return this.usuarioRepository.findAll()
+    }
+
+    buscarPorId(id: number){
+        return this.usuarioRepository.findById(id)
+    }
     validarCPF( cpf: string ){
         if(typeof cpf !== 'string')
             throw new Error ("Permitido apenas números")
@@ -24,11 +31,11 @@ export class UsuarioService{
     }
 
     validarCategoriaECurso(categoria_id: string, curso_id: string) {
-        if (this.catalogoRepository.existeCategoriaUsuario(categoria_id)) {
-            throw new Error("Categoria inválida ou inexistente");
+        if (!this.catalogoRepository.existeCategoriaUsuario(categoria_id)) {
+            throw new Error("Categoria inválida ou inexistente")
         }
-        if (this.catalogoRepository.existeCurso(curso_id)) {
-            throw new Error("Curso inválido ou inexistente");
+        if (!this.catalogoRepository.existeCurso(curso_id)) {
+            throw new Error("Curso inválido ou inexistente")
         }
         return true;
     }
@@ -42,11 +49,11 @@ export class UsuarioService{
 
     criarUsuario(usuario: UsuarioEntity) {
         if (!this.validarCPF(usuario.cpf)) {
-            throw new Error("CPF inválido");
+            throw new Error("CPF inválido")
         }
         this.verificarCPFduplicado(usuario.cpf);
-        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id);
+        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id)
 
-        return this.usuarioRepository.insereUsuario(usuario);
+        return this.usuarioRepository.insereUsuario(usuario)
     }
 }

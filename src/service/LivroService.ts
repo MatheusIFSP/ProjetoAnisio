@@ -1,11 +1,13 @@
 import { LivroEntity} from "../model/LivroEntity"
 import { LivroRepository } from "../repository/LivroRepository"
+import { CatalogoRepository } from "../repository/CatalogoRepository"
 
 export class LivroService{
     private livroRepository = LivroRepository.getInstance()
+    private catalogoRepository = CatalogoRepository.getInstance()
 
     verificarLivro(autor: string, editora: string, edicao: string) {
-        const livros = this.livroRepository.findAll();
+        const livros = this.livroRepository.findAll()
 
         const LivroExistente = livros.some(livro =>
             livro.autor === autor &&
@@ -14,28 +16,31 @@ export class LivroService{
         );
 
         if (LivroExistente){
-            throw new Error("Esse livro já está cadastrado");
+            throw new Error("Esse livro já está cadastrado")
         }
     }
 
     criarLivro(novoLivro: LivroEntity){
-        this.verificarLivro(novoLivro.autor, novoLivro.editora, novoLivro.edicao);
-        return this.livroRepository.insereLivro(novoLivro);
+        if (!this.catalogoRepository.existeCategoriaLivro(novoLivro.categoria_id)) {
+            throw new Error ("Categoria de livro inválida")
+        }
+        this.verificarLivro(novoLivro.autor, novoLivro.editora, novoLivro.edicao)
+        return this.livroRepository.insereLivro(novoLivro)
     }
     listarLivro(){
-        return this.livroRepository.findAll();
+        return this.livroRepository.findAll()
     }
-    buscarPorISBN(isbn: string) {
-        const livro = this.livroRepository.findByISBN(isbn);
+    buscarPorISBN(isbn: number) {
+        const livro = this.livroRepository.findByISBN(isbn)
         if (!livro){
-            throw new Error("Livro não encontrado");
+            throw new Error("Livro não encontrado")
         }
         return livro;
     }
-    atualizarLivro(isbn: string, dados: Partial<LivroEntity>){
-        return this.livroRepository.updateByISBN(isbn, dados);
+    atualizarLivro(isbn: number, dados: Partial<LivroEntity>){
+        return this.livroRepository.updateByISBN(isbn, dados)
     }
-    removerLivro(isbn: string) {
-        return this.livroRepository.deleteByISBN(isbn);
+    removerLivro(isbn: number) {
+        return this.livroRepository.removeByISBN(isbn)
     }
 }

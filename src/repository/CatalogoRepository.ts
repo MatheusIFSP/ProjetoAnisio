@@ -1,8 +1,9 @@
-import { UsuarioEntity } from "../model/UsuarioEntity";
+import { UsuarioEntity } from "../model/UsuarioEntity"
 
 export class CatalogoRepository {
-    private categoriaUsuario = ["Professor", "Aluno", "Bibliotecário"];
-    private cursos = ["ADS", "Pedagogia", "Administração"];
+    private categoriaUsuario = ["Professor", "Aluno", "Bibliotecário"]
+    private cursos = ["ADS", "Pedagogia", "Administração"]
+    private categoriaLivro = ["Romance", "Computação", "Letras", "Gestão"]
     private static instance: CatalogoRepository
 
     constructor(){}
@@ -11,18 +12,24 @@ export class CatalogoRepository {
         if( !this.instance ){
             this.instance = new CatalogoRepository()
         }
-        return CatalogoRepository.instance;
+        return CatalogoRepository.instance
     }
     listarCategoriaUsuario() {
-        return this.categoriaUsuario;
+        return this.categoriaUsuario
     }
     listarCursos() {
         return this.cursos;
     }
+    listarCategoriaLivro() {
+        return this.categoriaLivro
+    }
     existeCategoriaUsuario(categoria_id: string) {
-        return this.categoriaUsuario.includes(categoria_id);
+        return this.categoriaUsuario.includes(categoria_id)
     }
     existeCurso(curso_id: string) {
-        return this.categoriaUsuario.includes(curso_id)
+        return this.cursos.includes(curso_id)
+    }
+    existeCategoriaLivro(categoria_id: string) {
+        return this.categoriaLivro.includes(categoria_id)
     }
 }

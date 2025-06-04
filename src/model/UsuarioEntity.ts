@@ -2,7 +2,7 @@ export class UsuarioEntity {
     id: number
     nome: string
     cpf: string
-    ativo: boolean
+    status: string
     categoria_id: string
     curso_id: string
 
@@ -10,14 +10,14 @@ export class UsuarioEntity {
         id: number | undefined,
         nome: string,
         cpf: string,
-        ativo: boolean = true,
+        status: string = "Ativo",
         categoria_id: string,
         curso_id: string
     ){
         this.id = id ?? this.gerarId()
         this.nome = nome
         this.cpf = cpf
-        this.ativo = ativo
+        this.status = status
         this.categoria_id = categoria_id
         this.curso_id = curso_id
     }

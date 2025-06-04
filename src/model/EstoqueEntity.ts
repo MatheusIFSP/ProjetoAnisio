@@ -1,21 +1,18 @@
 export class EstoqueEntity {
     id: number
-    livro_id: number
-    quantidade: number
-    quantidade_emprestada: number
+    codigo: string
+    livro_isbn: number
     disponivel: boolean
 
     constructor(
         id: number | undefined,
-        livro_id: number,
-        quantidade: number,
-        quantidade_emprestada: number,
+        livro_isbn: number,
+        codigo: string,
         disponivel: boolean
     ){
         this.id = id ?? this.gerarId()
-        this.livro_id = livro_id
-        this.quantidade = quantidade
-        this.quantidade_emprestada = quantidade_emprestada
+        this.livro_isbn = livro_isbn
+        this.codigo = codigo
         this.disponivel = disponivel
     }
     private gerarId(): number{
