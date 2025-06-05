@@ -15,7 +15,7 @@ export class EstoqueRepository{
     
     insereEstoque(estoque: EstoqueEntity) {
         this.estoqueList.push(estoque)
-        return estoque;
+        return estoque
     }
 
     findAll() {
@@ -57,7 +57,7 @@ export class EstoqueRepository{
     }
     
     private findIndex( id: number):number {
-        const index = this.estoqueList.findIndex( l => l.id == id)
+        const index = this.estoqueList.findIndex( es => es.id == id)
         if(index == -1){
             throw new Error("ID informado não foi encontrado")
         }

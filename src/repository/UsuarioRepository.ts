@@ -6,7 +6,7 @@ export class UsuarioRepository{
 
     constructor(){}
 
-    static getInstance(): UsuarioRepository{
+    static getInstance(): UsuarioRepository {
         if( !this.instance ){
             this.instance = new UsuarioRepository()
         }
@@ -22,10 +22,16 @@ export class UsuarioRepository{
         return this.usuarioList
     }
 
-    findById( id:number): UsuarioEntity{
+    findById(id:number): UsuarioEntity {
         const index = this.findIndex(id)
         return this.usuarioList[index]
     }
+
+    removeById(id: number) {
+        const index = this.findIndex(id)
+        this.usuarioList.splice(index, 1)
+    }
+    
     private findIndex( id: number): number{
         const index = this.usuarioList.findIndex(u => u.id == id)
         if(index == -1){

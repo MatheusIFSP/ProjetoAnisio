@@ -50,4 +50,20 @@ export class UsuarioController{
             })
         }
     }
+
+    removerUsuario(req: Request, res: Response) {
+        try{
+            const { id } = req.params
+            this.usuarioService.removerUsuario(Number(id))
+            res.status(201).send()
+        }catch(error: unknown){
+            let message: string = "Não foi possível remover o usuário"
+            if( error instanceof Error){
+                message = error.message
+            }
+            res.status(400).json({
+                message: message
+            })
+        }
+    }
 }

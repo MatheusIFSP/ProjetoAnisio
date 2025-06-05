@@ -1,19 +1,32 @@
 import { UsuarioEntity } from "../model/UsuarioEntity"
 import { UsuarioRepository } from "../repository/UsuarioRepository"
 import { CatalogoRepository } from "../repository/CatalogoRepository"
+import { EmprestimoRepository } from "../repository/EmprestimoRepository"
 
 export class UsuarioService{
     private usuarioRepository = UsuarioRepository.getInstance()
     private catalogoRepository = CatalogoRepository.getInstance()
+    private emprestimoRepository = EmprestimoRepository.getInstance()
 
-    listarUsuario(){
+    criarUsuario(usuario: UsuarioEntity) {
+        if (!this.validarCPF(usuario.cpf)) {
+            throw new Error("CPF inválido")
+        }
+        this.verificarCPFduplicado(usuario.cpf);
+        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id)
+
+        return this.usuarioRepository.insereUsuario(usuario)
+    }
+
+    listarUsuario() {
         return this.usuarioRepository.findAll()
     }
 
-    buscarPorId(id: number){
+    buscarPorId(id: number) {
         return this.usuarioRepository.findById(id)
     }
-    validarCPF( cpf: string ){
+    
+    validarCPF( cpf: string ) {
         if(typeof cpf !== 'string')
             throw new Error ("Permitido apenas números")
         cpf = cpf.replace(/[^\d]+/g, '')
@@ -47,13 +60,11 @@ export class UsuarioService{
         }
     }
 
-    criarUsuario(usuario: UsuarioEntity) {
-        if (!this.validarCPF(usuario.cpf)) {
-            throw new Error("CPF inválido")
+    removerUsuario(id: number) {
+        const emprestimos = this.emprestimoRepository.findByUsuarioId(id)
+        if (emprestimos.length > 0) {
+            throw new Error("Usuário tem empréstimo pendente")
         }
-        this.verificarCPFduplicado(usuario.cpf);
-        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id)
-
-        return this.usuarioRepository.insereUsuario(usuario)
+        this.usuarioRepository.removeById(id)
     }
 }
