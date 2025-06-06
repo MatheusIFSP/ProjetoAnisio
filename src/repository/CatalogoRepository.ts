@@ -23,13 +23,4 @@ export class CatalogoRepository {
     listarCategoriaLivro() {
         return this.categoriaLivro
     }
-    existeCategoriaUsuario(categoria_id: string) {
-        return this.categoriaUsuario.includes(categoria_id)
-    }
-    existeCurso(curso_id: string) {
-        return this.cursos.includes(curso_id)
-    }
-    existeCategoriaLivro(categoria_id: string) {
-        return this.categoriaLivro.includes(categoria_id)
-    }
 }

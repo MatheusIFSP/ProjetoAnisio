@@ -51,6 +51,20 @@ export class UsuarioController{
         }
     }
 
+    atualizarUsuario(req: Request, res: Response) {
+        try{
+            const id = Number(req.params.id)
+            const usuarioAtualizado = this.usuarioService.atualizarUsuario(id, req.body)
+            res.status(201).json(usuarioAtualizado)
+        }catch (error: unknown){
+            let message: string = "Não foi possível atualizar o usuário"
+            if (error instanceof Error){
+                message = error.message
+            }
+            res.status(400).json({ message })
+        }
+    }
+
     removerUsuario(req: Request, res: Response) {
         try{
             const { id } = req.params

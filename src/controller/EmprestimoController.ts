@@ -41,11 +41,11 @@ export class EmprestimoController {
         }
     }
 
-    finalizarEmprestimo(req: Request, res: Response) {
+    devolverEmprestimo(req: Request, res: Response) {
         try{
             const id = Number(req.params.id)
             const { data_entrega } = req.body
-            const emprestimoFinalizado = this.emprestimoService.finalizarEmprestimo(id, new Date(data_entrega))
+            const emprestimoFinalizado = this.emprestimoService.devolverEmprestimo(id, new Date(data_entrega))
             res.status(201).json(emprestimoFinalizado)
         }catch(error: unknown){
             let message: string = "Usuário não encontrado"

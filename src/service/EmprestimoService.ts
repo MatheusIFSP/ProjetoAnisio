@@ -33,7 +33,7 @@ export class EmprestimoService {
         return this.emprestimoRepository.updateById(id, dados)
     }
 
-    finalizarEmprestimo(emprestimoId: number, dataEntrega: Date) {
+    devolverEmprestimo(emprestimoId: number, dataEntrega: Date) {
         const emprestimo = this.emprestimoRepository.findById(emprestimoId)
         emprestimo.data_devolucao = dataEntrega
 

@@ -25,6 +25,10 @@ export class UsuarioService{
     buscarPorId(id: number) {
         return this.usuarioRepository.findById(id)
     }
+
+    atualizarUsuario(id: number, dados: Partial<UsuarioEntity>){
+            return this.usuarioRepository.updateById(id, dados)
+        }
     
     validarCPF( cpf: string ) {
         if(typeof cpf !== 'string')

@@ -27,6 +27,12 @@ export class UsuarioRepository{
         return this.usuarioList[index]
     }
 
+    updateById(id: number, dados: Partial<UsuarioEntity>) {
+            const index = this.findIndex(id)
+            Object.assign(this.usuarioList[index], dados)
+            return this.usuarioList[index]
+        }
+
     removeById(id: number) {
         const index = this.findIndex(id)
         this.usuarioList.splice(index, 1)
