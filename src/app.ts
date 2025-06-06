@@ -36,13 +36,13 @@ app.delete("/library/estoque/:codigo", estoqueController.removerEstoque.bind(est
 
 app.post("/library/emprestimo", emprestimoController.criarEmprestimo.bind(emprestimoController))
 app.get("/library/emprestimo", emprestimoController.listarEmprestimo.bind(emprestimoController))
-app.get("/library/emprestimo:id", emprestimoController.buscarPorId.bind(emprestimoController))
+app.get("/library/emprestimo/:id", emprestimoController.buscarPorId.bind(emprestimoController))
 app.put("/library/emprestimo/:id/devolucao", emprestimoController.devolverEmprestimo.bind(emprestimoController))
 
 app.get("/library/categorias-usuario", catalogoController.listarCategoriaUsuario.bind(catalogoController))
 app.get("/library/cursos", catalogoController.listarCursos.bind(catalogoController))
 app.get("/library/categorias-livro", catalogoController.listarCategoriaLivro.bind(catalogoController))
 
-app.listen(PORT, () => console.log("Servidor rodando em http://localhost:${PORT}/library"))
+app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}/library`))
 
 
