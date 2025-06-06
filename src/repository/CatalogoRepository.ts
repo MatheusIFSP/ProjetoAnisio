@@ -23,4 +23,16 @@ export class CatalogoRepository {
     listarCategoriaLivro() {
         return this.categoriaLivro
     }
+
+    existeCategoriaUsuario(categoria: string): boolean {
+        return this.categoriaUsuario.includes(categoria);
+    }
+
+    existeCurso(curso: string): boolean {
+        return this.cursos.includes(curso);
+    }
+
+    existeCategoriaLivro(categoria: string): boolean {
+        return this.categoriaLivro.includes(categoria);
+    }
 }
