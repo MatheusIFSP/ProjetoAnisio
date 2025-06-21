@@ -17,7 +17,7 @@ export class EmprestimoService {
         if (!exemplar.disponivel) {
             throw new Error ("Exemplar não disponível para empréstimo")
         }
-        this.estoqueRepository.Disponivel(exemplar.id)
+        exemplar.disponivel = false
         return this.emprestimoRepository.insereEmprestimo(emprestimo)
     }
 
@@ -47,8 +47,17 @@ export class EmprestimoService {
 
             const usuario = this.usuarioRepository.findById(emprestimo.usuario_id)
             usuario.status = "Suspenso"
+        }else {
+            const emprestimos = this.emprestimoRepository.findByUsuarioId(emprestimo.usuario_id)
+            const atrasados = emprestimos.filter(e => e.dias_atraso && e.dias_atraso > 0)
+
+            if(atrasados.length > 2) {
+                const usuario = this.usuarioRepository.findById(emprestimo.usuario_id)
+                usuario.status = "Inativo"
+            }
         }
-        this.estoqueRepository.Disponivel(emprestimo.estoque_id)
+        const exemplar = this.estoqueRepository.findById(emprestimo.estoque_id)
+        exemplar.disponivel = true
         return this.emprestimoRepository.updateById(emprestimoId, emprestimo)
     }
 

@@ -12,6 +12,11 @@ export class EstoqueRepository{
         }
         return EstoqueRepository.instance
     }
+
+    criarExemplar(exemplar: EstoqueEntity){
+        this.estoqueList.push(exemplar)
+        return exemplar
+    }
     
     insereEstoque(estoque: EstoqueEntity) {
         this.estoqueList.push(estoque)
