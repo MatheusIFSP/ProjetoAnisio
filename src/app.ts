@@ -4,12 +4,14 @@ import { LivroController } from "./controller/LivroController"
 import { EstoqueController } from "./controller/EstoqueController"
 import { EmprestimoController } from "./controller/EmprestimoController"
 import { CatalogoController } from "./controller/CatalogoController"
+import { ProductRepository } from "./repository/ProductRepository"
 
 const usuarioController = new UsuarioController()
 const livroController = new LivroController()
 const estoqueController = new EstoqueController()
 const emprestimoController = new EmprestimoController()
 const catalogoController = new CatalogoController()
+const repository: ProductRepository = new ProductRepository()
 
 const app = express()
 
@@ -42,6 +44,12 @@ app.put("/library/emprestimo/:id/devolucao", emprestimoController.devolverEmpres
 app.get("/library/categorias-usuario", catalogoController.listarCategoriaUsuario.bind(catalogoController))
 app.get("/library/cursos", catalogoController.listarCursos.bind(catalogoController))
 app.get("/library/categorias-livro", catalogoController.listarCategoriaLivro.bind(catalogoController))
+
+app.post
+app.get
+app.get
+app.put
+app.delete("/library/product", )
 
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}/library`))
 
