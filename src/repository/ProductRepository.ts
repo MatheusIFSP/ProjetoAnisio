@@ -2,6 +2,16 @@ import { executarComandoSQL } from "../database/mysql";
 import { Product } from "../model/Product"
 
 export class ProductRepository{
+    private static instance: ProductRepository;
+
+    private constructor(){}
+
+    static getInstance(){
+        if(!this.instance){
+            this.instance = new ProductRepository()
+        }
+        return this.instance
+    }
 
 imprimeResult(err:any, result: any) {
     if(result != undefined) {
@@ -11,7 +21,8 @@ imprimeResult(err:any, result: any) {
 
 createTable() {
     try {
-        const resultado = executarComandoSQL("CREATE TABLE Vendas.Product (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR (255) NOT NULL, price DECIMAL (10,2) NOT NULL)", [], this.imprimeResult);
+        const resultado = executarComandoSQL("CREATE TABLE Vendas.Product (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR (255) NOT NULL, price DECIMAL (10,2) NOT NULL)", 
+            [], this.imprimeResult);
         console.log('Query executada com sucesso:', resultado);
     } catch (err) {
         console.error('Erro ao executar a query:', err);
@@ -27,6 +38,8 @@ insertProduct(name: string, price: number) {
         console.log('Produto inserindo com sucesso:', resultado);
     } catch (err) {
         console.error('Erro ao inserir o produto:', err);
+        if( err instanceof Error)
+            throw err
     }
 }
 
