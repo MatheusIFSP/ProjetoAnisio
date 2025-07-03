@@ -18,15 +18,18 @@ mysqlConnection.connect ((err) => {
     console.log('Conexao bem-sucedida com o banco de dados My SQL');
 });
 
-export function executarComandoSQL(query: string, valores: any[], callback: (err: any, result: any)=>void){
-    mysqlConnection.query(query, valores, (err, resultado: any) => {
-        if (err) {
-            console.error('Erro ao executar a query', err);
-            throw err;
-        }
-        return callback(err, resultado);
-    });
+export function executarComandoSQL(query: string, valores: any[]): Promise<any>{
+    return new Promise<any>(
+        (resolve, reject) => {
+            mysqlConnection.query(query, valores, (err, resultado) => {
+                if (err) {
+                    console.error('Erro ao executar a query', err);
+                    reject(err)
+                }
+                resolve(resultado)
+            });
+    }
+    )
 }
-
 
 
