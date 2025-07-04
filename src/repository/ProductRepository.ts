@@ -4,7 +4,9 @@ import { Product } from "../model/Product"
 export class ProductRepository{
     private static instance: ProductRepository;
 
-    private constructor(){}
+    private constructor(){
+        this.createTable()
+    }
 
     static getInstance(){
         if(!this.instance){
@@ -13,52 +15,43 @@ export class ProductRepository{
         return this.instance
     }
 
-imprimeResult(err:any, result: any) {
-    if(result != undefined) {
-        console.log("Dentro callback", result);
+    private async createTable() {
+        const query =   `CREATE TABLE IF NOT EXISTS Vendas.Product (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL,
+                            price DECIMAL(10,2) NOT NULL
+                        )`
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            console.log('Tabela Product criada com sucesso:', resultado);
+        } catch (err) {
+            console.error('Erro ao executar a query:', err);
+        }
     }
-}
 
-createTable() {
-    try {
-        const resultado = executarComandoSQL("CREATE TABLE Vendas.Product (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR (255) NOT NULL, price DECIMAL (10,2) NOT NULL)", 
-            [], this.imprimeResult);
-        console.log('Query executada com sucesso:', resultado);
-    } catch (err) {
-        console.error('Erro ao executar a query:', err);
-    }
-}
-
-insertProduct(name: string, price: number) {
-    try {
-        const resultado = executarComandoSQL(
+    async insertProduct(name: string, price: number): Promise<Product>{
+        const resultado = await executarComandoSQL(
             "INSERT INTO vendas.Product (name, price) VALUES (?, ?)",
-            [name, price], this.imprimeResult
+            [name, price]
         );
-        console.log('Produto inserindo com sucesso:', resultado);
-    } catch (err) {
-        console.error('Erro ao inserir o produto:', err);
-        if( err instanceof Error)
-            throw err
+        const newProduct = new Product(resultado.insertId, name, price)
+        console.log('Produto inserido com sucesso:', newProduct);
+        return newProduct
     }
 }
 
-deleteProduct(id: number) {
-    try {
-        const deletar = executarComandoSQL(
+    async deleteProduct(id: number): Promise<Product>{
+        const deletar = await executarComandoSQL(
             "DELETE FROM vendas.Product WHERE id = ?",
-            [id], this.imprimeResult
+            [id]
         );
-        console.log('Produto deletado com sucesso:', deletar);
-    } catch (err) {
-        console.error('Erro ao inserir o produto:', err);
+        const 
     }
-}
 
-updateProduct(id: number) {
+    async updateProduct(id: number): Promise {
     try {
         const atualizar = executarComandoSQL(
-            "UPDATE vendas.product SET (name, price) VALUES (?, ?) WHERE id = ?",
+            "UPDATE vendas.Product SET (name, price) VALUES (?, ?) WHERE id = ?",
             [id], this.imprimeResult
         );
         console.log('Produto deletado com sucesso:', atualizar);
@@ -66,4 +59,12 @@ updateProduct(id: number) {
         console.error('Erro ao atualizar o produto:', err);
     }
 }
+
+    async findById(id: number): Promise<Product>{
+        const achar = await executarComandoSQL(
+            "SELECT FROM vendas.Product WHERE id = ?",
+            [id]
+        );
+        return 
+    }
 }

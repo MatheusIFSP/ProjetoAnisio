@@ -11,7 +11,6 @@ const livroController = new LivroController()
 const estoqueController = new EstoqueController()
 const emprestimoController = new EmprestimoController()
 const catalogoController = new CatalogoController()
-const repository: ProductRepository = new ProductRepository()
 
 const app = express()
 
