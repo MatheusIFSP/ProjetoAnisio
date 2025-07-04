@@ -1,19 +1,21 @@
 {
   "name": "matheusf",
   "version": "1.0.0",
+  "description": "Swagger",
   "main": "meunome.js",
   "scripts": {
-    "build": "npx tsc",
     "start": "node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsoa spec-and-routes && npx tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "## 📖 Sobre a Disciplina",
   "dependencies": {
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.30",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "express": "^5.1.0",
     "mysql2": "^3.14.1",
     "swagger-ui-express": "^5.0.1",
