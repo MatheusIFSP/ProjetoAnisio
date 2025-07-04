@@ -16,6 +16,8 @@
     "@types/node": "^22.15.30",
     "express": "^5.1.0",
     "mysql2": "^3.14.1",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0",
     "typescript": "^5.8.3"
   }
 }
