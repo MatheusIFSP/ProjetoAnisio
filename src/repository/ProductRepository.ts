@@ -38,33 +38,33 @@ export class ProductRepository{
         console.log('Produto inserido com sucesso:', newProduct);
         return newProduct
     }
-}
 
-    async deleteProduct(id: number): Promise<Product>{
+    async findById(id: number): Promise<Product> {
+        const achar = await executarComandoSQL(
+            "SELECT * FROM vendas.Product WHERE id = ?",
+            [id]
+        );
+        const findProduct = new Product(achar[0].selectId, achar[0].name, achar[0].price)
+        console.log('Produto achado com sucesso:', Product);
+        return findProduct
+    }
+
+        async deleteProduct(id: number): Promise<Product>{
+            const produto = await this.findById(id)
         const deletar = await executarComandoSQL(
             "DELETE FROM vendas.Product WHERE id = ?",
             [id]
         );
-        const 
+        return produto
     }
 
-    async updateProduct(id: number): Promise {
-    try {
+        async updateProduct(id: number): Promise<Product>{
+            const produto = await this.findById(id)
         const atualizar = executarComandoSQL(
             "UPDATE vendas.Product SET (name, price) VALUES (?, ?) WHERE id = ?",
-            [id], this.imprimeResult
+            [id]
         );
-        console.log('Produto deletado com sucesso:', atualizar);
-    }catch (err) {
-        console.error('Erro ao atualizar o produto:', err);
+        return produto
     }
 }
 
-    async findById(id: number): Promise<Product>{
-        const achar = await executarComandoSQL(
-            "SELECT FROM vendas.Product WHERE id = ?",
-            [id]
-        );
-        return 
-    }
-}
