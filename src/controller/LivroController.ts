@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { LivroService } from "../service/LivroService"
-import { LivroEntity } from "../model/LivroEntity"
+import { LivroEntity } from "../model/entity/LivroEntity"
 
 export class LivroController {
     private livroService = new LivroService()

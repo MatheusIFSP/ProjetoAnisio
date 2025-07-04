@@ -1,70 +1,120 @@
 import { executarComandoSQL } from "../database/mysql";
-import { Product } from "../model/Product"
+import { Product } from "../model/entity/Product";
+
 
 export class ProductRepository{
-    private static instance: ProductRepository;
 
-    private constructor(){
-        this.createTable()
-    }
-
-    static getInstance(){
-        if(!this.instance){
-            this.instance = new ProductRepository()
-        }
-        return this.instance
+    constructor(){
+        this.createTable();
     }
 
     private async createTable() {
-        const query =   `CREATE TABLE IF NOT EXISTS Vendas.Product (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL,
-                            price DECIMAL(10,2) NOT NULL
-                        )`
+        const query = `
+        CREATE TABLE IF NOT EXISTS estoque.Product (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            price DECIMAL(10,2) NOT NULL,
+            expirationDate DATE NOT NULL
+        )`;
+
         try {
-            const resultado = await executarComandoSQL(query, []);
-            console.log('Tabela Product criada com sucesso:', resultado);
+                const resultado =  await executarComandoSQL(query, []);
+                console.log('Query executada com sucesso:', resultado);
         } catch (err) {
-            console.error('Erro ao executar a query:', err);
+            console.error('Error');
         }
     }
 
-    async insertProduct(name: string, price: number): Promise<Product>{
-        const resultado = await executarComandoSQL(
-            "INSERT INTO vendas.Product (name, price) VALUES (?, ?)",
-            [name, price]
-        );
-        const newProduct = new Product(resultado.insertId, name, price)
-        console.log('Produto inserido com sucesso:', newProduct);
-        return newProduct
+    async insertProduct(product:Product) :Promise<Product>{
+        const query = "INSERT INTO estoque.Product (name, price, expirationDate) VALUES (?, ?, ?)" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [product.name, product.price]);
+            console.log('Produto inserido com sucesso, ID: ', resultado.insertId);
+            product.id = resultado.insertId;
+            return new Promise<Product>((resolve)=>{
+                resolve(product);
+            })
+        } catch (err) {
+            console.error('Erro ao inserir o produto:', err);
+            throw err;
+        }
     }
 
-    async findById(id: number): Promise<Product> {
-        const achar = await executarComandoSQL(
-            "SELECT * FROM vendas.Product WHERE id = ?",
-            [id]
-        );
-        const findProduct = new Product(achar[0].selectId, achar[0].name, achar[0].price)
-        console.log('Produto achado com sucesso:', Product);
-        return findProduct
+    async updateProduct(product:Product) :Promise<Product>{
+        const query = "UPDATE estoque.product set name = ?, price = ?, expirationDate = ? where id = ?;" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [product.name, product.price, product.id]);
+            console.log('Produto atualizado com sucesso, ID: ', resultado);
+            return new Promise<Product>((resolve)=>{
+                resolve(product);
+            })
+        } catch (err:any) {
+            console.error(`Erro ao atualizar o produto de ID ${product.id} gerando o erro: ${err}`);
+            throw err;
+        }
     }
 
-        async deleteProduct(id: number): Promise<Product>{
-            const produto = await this.findById(id)
-        const deletar = await executarComandoSQL(
-            "DELETE FROM vendas.Product WHERE id = ?",
-            [id]
-        );
-        return produto
+    async deleteProduct(product:Product) :Promise<Product>{
+        const query = "DELETE FROM estoque.product where id = ?;" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [product.id]);
+            console.log('Produto deletado com sucesso: ', product);
+            return new Promise<Product>((resolve)=>{
+                resolve(product);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao deletar o produto de ID ${product.id} gerando o erro: ${err}`);
+            throw err;
+        }
     }
 
-        async updateProduct(id: number): Promise<Product>{
-            const produto = await this.findById(id)
-        const atualizar = executarComandoSQL(
-            "UPDATE vendas.Product SET (name, price) VALUES (?, ?) WHERE id = ?",
-            [id]
-        );
-        return produto
+    async filterProductById(id: number) :Promise<Product>{
+        const query = "SELECT * FROM estoque.product where id = ?" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [id]);
+            console.log('Produto localizado com sucesso, ID: ', resultado);
+            return new Promise<Product>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao procurar o produto de ID ${id} gerando o erro: ${err}`);
+            throw err;
+        }
     }
+
+    async filterProductByName(name: string) :Promise<Product[]>{
+        const query = "SELECT * FROM estoque.product where name = ?" ;
+
+        try {
+            const resultado:Product[] = await executarComandoSQL(query, [name]);
+            console.log('Produto localizado com sucesso, ID: ', resultado);
+            return new Promise<Product[]>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao procurar o produto ${name} gerando o erro: ${err}`);
+            throw err;
+        }
+    }
+
+    async filterAllProduct() :Promise<Product[]>{
+        const query = "SELECT * FROM estoque.product" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            return new Promise<Product[]>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao listar os produtos gerando o erro: ${err}`);
+            throw err;
+        }
+    }
+
+    
 }
 

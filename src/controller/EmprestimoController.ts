@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { EmprestimoService } from "../service/EmprestimoService"
-import { EmprestimoEntity } from "../model/EmprestimoEntity"
+import { EmprestimoEntity } from "../model/entity/EmprestimoEntity"
 
 export class EmprestimoController {
     private emprestimoService = new EmprestimoService()

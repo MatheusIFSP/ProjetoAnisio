@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UsuarioService } from "../service/UsuarioService";
-import { UsuarioEntity } from "../model/UsuarioEntity";
+import { UsuarioEntity } from "../model/entity/UsuarioEntity";
 
 export class UsuarioController{
     private usuarioService = new UsuarioService()

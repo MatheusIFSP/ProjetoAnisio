@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { EstoqueService } from "../service/EstoqueService"
-import { EstoqueEntity } from "../model/EstoqueEntity"
+import { EstoqueEntity } from "../model/entity/EstoqueEntity"
 
 export class EstoqueController {
     private estoqueService = new EstoqueService()

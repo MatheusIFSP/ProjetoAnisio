@@ -1,4 +1,4 @@
-import { UsuarioEntity } from "../model/UsuarioEntity"
+import { UsuarioEntity } from "../model/entity/UsuarioEntity"
 import { UsuarioRepository } from "../repository/UsuarioRepository"
 import { CatalogoRepository } from "../repository/CatalogoRepository"
 import { EmprestimoRepository } from "../repository/EmprestimoRepository"

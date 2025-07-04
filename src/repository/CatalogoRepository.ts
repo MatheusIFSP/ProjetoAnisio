@@ -1,4 +1,4 @@
-import { UsuarioEntity } from "../model/UsuarioEntity"
+import { UsuarioEntity } from "../model/entity/UsuarioEntity"
 
 export class CatalogoRepository {
     private categoriaUsuario = ["Professor", "Aluno", "Bibliotecário"]

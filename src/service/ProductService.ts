@@ -1,13 +1,60 @@
-import { Product } from "../model/Product"
-import { ProductRepository } from "../repository/ProductRepository"
+import { Product } from "../model/entity/Product";
+import { ProductRepository } from "../repository/ProductRepository";
 
 export class ProductService{
-    private productRepository = ProductRepository.getInstance()
 
-    createProduct (data: any){
-        if(!data.name || !data.price){
-            throw new Error('Favor informar os campos obrigatórios')
-        }
-        this.productRepository.insertProduct(data.name, data.price)
+    productRepository: ProductRepository = new ProductRepository();
+
+    async cadastrarProduto(produtoData: any): Promise<Product> {
+        const { name, price, expirationDate } = produtoData;
+        
+        const produto = new Product(undefined, name, price)
+
+        const novoProduto =  await this.productRepository.insertProduct(produto);
+        console.log("Service - Insert ", novoProduto);
+        return novoProduto;
     }
+
+    async atualizarProduto(produtoData: any): Promise<Product> {
+        const { id, name, price, expirationDate } = produtoData;
+
+        const produto = new Product(id, name, price)
+
+        await this.productRepository.updateProduct(produto);
+        console.log("Service - Update ", produto);
+        return produto;
+    }
+
+    async deletarProduto(produtoData: any): Promise<Product> {
+        const { id, name, price, expirationDate } = produtoData;
+
+        const produto = new Product(id, name, price)
+
+        await this.productRepository.deleteProduct(produto);
+        console.log("Service - Delete ", produto);
+        return produto;
+    }
+
+    async filtrarProdutoById(produtoData: any): Promise<Product> {
+        const idNumber = parseInt(produtoData, 10);
+
+        const produto =  await this.productRepository.filterProductById(idNumber);
+        console.log("Service - Filtrar", produto);
+        return produto;
+    }
+
+    async filtrarProdutoByName(produtoData: any): Promise<Product[]> {
+        const name:string = produtoData;
+
+        const produtos =  await this.productRepository.filterProductByName(name);
+        console.log("Service - Filtrar", produtos);
+        return produtos;
+    }
+
+    async listarTodosProdutos(): Promise<Product[]> {
+        const produtos =  await this.productRepository.filterAllProduct();
+        console.log("Service - Filtrar Todos", produtos);
+        return produtos;
+    }
+
 }
