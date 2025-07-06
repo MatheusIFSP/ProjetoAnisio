@@ -1,83 +1,74 @@
-import { Request, Response } from "express";
+import {
+  Body, Controller, Delete, Get, Path, Post, Put,
+  Res, Route, Tags, TsoaResponse
+} from "tsoa";
 import { UsuarioService } from "../service/UsuarioService";
-import { UsuarioEntity } from "../model/entity/UsuarioEntity";
+import { UsuarioDto } from "../model/dto/UsuarioDto";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 
-export class UsuarioController{
-    private usuarioService = new UsuarioService()
+@Route("usuarios")
+@Tags("Usuários")
+export class UsuarioController extends Controller {
+  private usuarioService = new UsuarioService();
 
-    criarUsuario(req: Request, res: Response) {
-        try{
-            const usuario = this.usuarioService.criarUsuario(req.body)
-            res.status(201).json(usuario)
-        }catch(error: unknown){
-            let message: string = "Não foi possível criar o registro"
-            if( error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({
-                message: message
-            })
-        }
+  @Post()
+  async criarUsuario(
+    @Body() dto: UsuarioDto,
+    @Res() success: TsoaResponse<201, BasicResponseDto>,
+    @Res() fail: TsoaResponse<400, BasicResponseDto>
+  ) {
+    try {
+      const usuario = this.usuarioService.criarUsuario(UsuarioDto);
+      return success(201, new BasicResponseDto("Usuário criado com sucesso", usuario));
+    } catch (error: any) {
+      return fail(400, new BasicResponseDto(error.message, null));
     }
+  }
 
-    listarUsuario(req: Request, res: Response) {
-        try{
-            const usuario = this.usuarioService.listarUsuario()
-            res.status(201).json(usuario)
-        }catch(error: unknown){
-            let message: string = "Não foi possível listar os usuários"
-            if( error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({
-                message: message
-            })
-        }
-    }
+  @Get()
+  async listarUsuario(): Promise<any[]> {
+    return this.usuarioService.listarUsuario();
+  }
 
-    buscarPorId(req: Request, res: Response) {
-        try{
-            const { id } = req.params
-            const usuario = this.usuarioService.buscarPorId(Number(id))
-            res.status(201).json(usuario)
-        }catch(error: unknown){
-            let message: string = "Usuário não encontrado"
-            if( error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({
-                message: message
-            })
-        }
+  @Get("{id}")
+  async buscarPorId(
+    @Path() id: number,
+    @Res() fail: TsoaResponse<404, BasicResponseDto>
+  ) {
+    try {
+      const usuario = this.usuarioService.buscarPorId(id);
+      return usuario;
+    } catch (error: any) {
+      return fail(404, new BasicResponseDto(error.message, null));
     }
+  }
 
-    atualizarUsuario(req: Request, res: Response) {
-        try{
-            const id = Number(req.params.id)
-            const usuarioAtualizado = this.usuarioService.atualizarUsuario(id, req.body)
-            res.status(201).json(usuarioAtualizado)
-        }catch (error: unknown){
-            let message: string = "Não foi possível atualizar o usuário"
-            if (error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({ message })
-        }
+  @Put("{id}")
+  async atualizarUsuario(
+    @Path() id: number,
+    @Body() dto: UsuarioDto,
+    @Res() success: TsoaResponse<200, BasicResponseDto>,
+    @Res() fail: TsoaResponse<400, BasicResponseDto>
+  ) {
+    try {
+      const atualizado = this.usuarioService.atualizarUsuario(id, dto);
+      return success(200, new BasicResponseDto("Usuário atualizado com sucesso", atualizado));
+    } catch (error: any) {
+      return fail(400, new BasicResponseDto(error.message, null));
     }
+  }
 
-    removerUsuario(req: Request, res: Response) {
-        try{
-            const { id } = req.params
-            this.usuarioService.removerUsuario(Number(id))
-            res.status(201).send()
-        }catch(error: unknown){
-            let message: string = "Não foi possível remover o usuário"
-            if( error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({
-                message: message
-            })
-        }
+  @Delete("{id}")
+  async removerUsuario(
+    @Path() id: number,
+    @Res() success: TsoaResponse<200, BasicResponseDto>,
+    @Res() fail: TsoaResponse<400, BasicResponseDto>
+  ) {
+    try {
+      this.usuarioService.removerUsuario(id);
+      return success(200, new BasicResponseDto("Usuário removido com sucesso", null));
+    } catch (error: any) {
+      return fail(400, new BasicResponseDto(error.message, null));
     }
+  }
 }
