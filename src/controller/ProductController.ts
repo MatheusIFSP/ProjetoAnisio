@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags
 import { ProductRequestDto } from "../model/dto/ProductRequestDto";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 import { ProductDto } from "../model/dto/ProductDto";
-import { Product } from "../model/entity/Product";
+import { ProductEntity } from "../model/entity/Product";
 
 @Route("product")
 @Tags("Product")
@@ -73,7 +73,7 @@ export class ProductController extends Controller {
         @Res() success: TsoaResponse<200, BasicResponseDto>
     ): Promise<void> {
         try {
-            const products: Product[] = await this.productService.filtrarProdutoByName(name);
+            const products: ProductEntity[] = await this.productService.filtrarProdutoByName(name);
             return success(200, new BasicResponseDto("Produto encontrado!", products));
         } catch (error: any) {
             return notFound(400, new BasicResponseDto(error.message, undefined));
@@ -86,7 +86,7 @@ export class ProductController extends Controller {
         @Res() success: TsoaResponse<200, BasicResponseDto>
     ): Promise<void> {
         try {
-            const products: Product[] = await this.productService.listarTodosProdutos();
+            const products: ProductEntity[] = await this.productService.listarTodosProdutos();
             return success(200, new BasicResponseDto("Produtos listados com sucesso!", products));
         } catch (error: any) {
             return notFound(400, new BasicResponseDto(error.message, undefined));

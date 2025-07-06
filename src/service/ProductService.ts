@@ -1,41 +1,41 @@
-import { Product } from "../model/entity/Product";
+import { ProductEntity } from "../model/entity/Product";
 import { ProductRepository } from "../repository/ProductRepository";
 
 export class ProductService{
 
     productRepository: ProductRepository = new ProductRepository();
 
-    async cadastrarProduto(produtoData: any): Promise<Product> {
+    async cadastrarProduto(produtoData: any): Promise<ProductEntity> {
         const { name, price, expirationDate } = produtoData;
         
-        const produto = new Product(undefined, name, price)
+        const produto = new ProductEntity(undefined, name, price)
 
         const novoProduto =  await this.productRepository.insertProduct(produto);
         console.log("Service - Insert ", novoProduto);
         return novoProduto;
     }
 
-    async atualizarProduto(produtoData: any): Promise<Product> {
+    async atualizarProduto(produtoData: any): Promise<ProductEntity> {
         const { id, name, price, expirationDate } = produtoData;
 
-        const produto = new Product(id, name, price)
+        const produto = new ProductEntity(id, name, price)
 
         await this.productRepository.updateProduct(produto);
         console.log("Service - Update ", produto);
         return produto;
     }
 
-    async deletarProduto(produtoData: any): Promise<Product> {
+    async deletarProduto(produtoData: any): Promise<ProductEntity> {
         const { id, name, price, expirationDate } = produtoData;
 
-        const produto = new Product(id, name, price)
+        const produto = new ProductEntity(id, name, price)
 
         await this.productRepository.deleteProduct(produto);
         console.log("Service - Delete ", produto);
         return produto;
     }
 
-    async filtrarProdutoById(produtoData: any): Promise<Product> {
+    async filtrarProdutoById(produtoData: any): Promise<ProductEntity> {
         const idNumber = parseInt(produtoData, 10);
 
         const produto =  await this.productRepository.filterProductById(idNumber);
@@ -43,7 +43,7 @@ export class ProductService{
         return produto;
     }
 
-    async filtrarProdutoByName(produtoData: any): Promise<Product[]> {
+    async filtrarProdutoByName(produtoData: any): Promise<ProductEntity[]> {
         const name:string = produtoData;
 
         const produtos =  await this.productRepository.filterProductByName(name);
@@ -51,7 +51,7 @@ export class ProductService{
         return produtos;
     }
 
-    async listarTodosProdutos(): Promise<Product[]> {
+    async listarTodosProdutos(): Promise<ProductEntity[]> {
         const produtos =  await this.productRepository.filterAllProduct();
         console.log("Service - Filtrar Todos", produtos);
         return produtos;

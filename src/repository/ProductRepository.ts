@@ -1,5 +1,5 @@
 import { executarComandoSQL } from "../database/mysql";
-import { Product } from "../model/entity/Product";
+import { ProductEntity } from "../model/entity/Product";
 
 
 export class ProductRepository{
@@ -25,14 +25,14 @@ export class ProductRepository{
         }
     }
 
-    async insertProduct(product:Product) :Promise<Product>{
+    async insertProduct(product:ProductEntity) :Promise<ProductEntity>{
         const query = "INSERT INTO estoque.Product (name, price, expirationDate) VALUES (?, ?, ?)" ;
 
         try {
             const resultado = await executarComandoSQL(query, [product.name, product.price]);
             console.log('Produto inserido com sucesso, ID: ', resultado.insertId);
             product.id = resultado.insertId;
-            return new Promise<Product>((resolve)=>{
+            return new Promise<ProductEntity>((resolve)=>{
                 resolve(product);
             })
         } catch (err) {
@@ -41,13 +41,13 @@ export class ProductRepository{
         }
     }
 
-    async updateProduct(product:Product) :Promise<Product>{
+    async updateProduct(product:ProductEntity) :Promise<ProductEntity>{
         const query = "UPDATE estoque.product set name = ?, price = ?, expirationDate = ? where id = ?;" ;
 
         try {
             const resultado = await executarComandoSQL(query, [product.name, product.price, product.id]);
             console.log('Produto atualizado com sucesso, ID: ', resultado);
-            return new Promise<Product>((resolve)=>{
+            return new Promise<ProductEntity>((resolve)=>{
                 resolve(product);
             })
         } catch (err:any) {
@@ -56,13 +56,13 @@ export class ProductRepository{
         }
     }
 
-    async deleteProduct(product:Product) :Promise<Product>{
+    async deleteProduct(product:ProductEntity) :Promise<ProductEntity>{
         const query = "DELETE FROM estoque.product where id = ?;" ;
 
         try {
             const resultado = await executarComandoSQL(query, [product.id]);
             console.log('Produto deletado com sucesso: ', product);
-            return new Promise<Product>((resolve)=>{
+            return new Promise<ProductEntity>((resolve)=>{
                 resolve(product);
             })
         } catch (err:any) {
@@ -71,13 +71,13 @@ export class ProductRepository{
         }
     }
 
-    async filterProductById(id: number) :Promise<Product>{
+    async filterProductById(id: number) :Promise<ProductEntity>{
         const query = "SELECT * FROM estoque.product where id = ?" ;
 
         try {
             const resultado = await executarComandoSQL(query, [id]);
             console.log('Produto localizado com sucesso, ID: ', resultado);
-            return new Promise<Product>((resolve)=>{
+            return new Promise<ProductEntity>((resolve)=>{
                 resolve(resultado);
             })
         } catch (err:any) {
@@ -86,13 +86,13 @@ export class ProductRepository{
         }
     }
 
-    async filterProductByName(name: string) :Promise<Product[]>{
+    async filterProductByName(name: string) :Promise<ProductEntity[]>{
         const query = "SELECT * FROM estoque.product where name = ?" ;
 
         try {
-            const resultado:Product[] = await executarComandoSQL(query, [name]);
+            const resultado:ProductEntity[] = await executarComandoSQL(query, [name]);
             console.log('Produto localizado com sucesso, ID: ', resultado);
-            return new Promise<Product[]>((resolve)=>{
+            return new Promise<ProductEntity[]>((resolve)=>{
                 resolve(resultado);
             })
         } catch (err:any) {
@@ -101,12 +101,12 @@ export class ProductRepository{
         }
     }
 
-    async filterAllProduct() :Promise<Product[]>{
+    async filterAllProduct() :Promise<ProductEntity[]>{
         const query = "SELECT * FROM estoque.product" ;
 
         try {
             const resultado = await executarComandoSQL(query, []);
-            return new Promise<Product[]>((resolve)=>{
+            return new Promise<ProductEntity[]>((resolve)=>{
                 resolve(resultado);
             })
         } catch (err:any) {
