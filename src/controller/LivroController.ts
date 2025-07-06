@@ -1,69 +1,50 @@
-import { Request, Response } from "express"
-import { LivroService } from "../service/LivroService"
-import { LivroEntity } from "../model/entity/LivroEntity"
+import {
+  Body, Controller, Delete, Get, Path, Post, Put,
+  Res, Route, Tags, TsoaResponse
+} from "tsoa";
+import { LivroService } from "../service/LivroService";
+import { LivroDto } from "../model/dto/LivroDto"
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 
-export class LivroController {
-    private livroService = new LivroService()
+@Route("livros")
+@Tags("Livros")
+export class LivroController extends Controller {
+  private livroService = new LivroService();
 
-    criarLivro(req: Request, res: Response) {
-        try{
-            const livro = this.livroService.criarLivro(req.body)
-            res.status(201).json(livro)
-        }catch(error: unknown){
-            let message: string = "Não foi possível criar o registro"
-            if( error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({
-                message: message
-            })
-        }
+  @Post()
+  async criarLivro(
+    @Body() dto: LivroRequestDto,
+    @Res() success: TsoaResponse<201, BasicResponseDto>,
+    @Res() fail: TsoaResponse<400, BasicResponseDto>
+  ) {
+    try {
+      const livro = this.livroService.criarLivro(dto);
+      return success(201, new BasicResponseDto("Livro criado com sucesso", livro));
+    } catch (error: any) {
+      return fail(400, new BasicResponseDto(error.message, null));
     }
+  }
 
-    listarLivro(req: Request, res: Response) {
-        const livros = this.livroService.listarLivro()
-        res.json(livros)
-    }
+  @Get()
+  async listarLivro(): Promise<any[]> {
+    return this.livroService.listarLivro();
+  }
 
-    buscarPorISBN(req: Request, res: Response) {
-        try{
-            const isbn = Number(req.params.isbn)
-            const livro = this.livroService.buscarPorISBN(isbn);
-            res.status(201).json(livro)
-    } catch (error: unknown) {
-        let message: string = "Livro não encontrado"
-        if (error instanceof Error){
-            message = error.message
-        }
-        res.status(400).json({ message })
-        }
-    }  
+  @Get("{isbn}")
+  async buscarPorISBN(@Path() isbn: number): Promise<any> {
+    return this.livroService.buscarPorISBN(isbn);
+  }
 
-    atualizarLivro(req: Request, res: Response) {
-        try{
-            const isbn = Number(req.params.isbn)
-            const livroAtualizado = this.livroService.atualizarLivro(isbn, req.body)
-            res.status(201).json(livroAtualizado)
-        }catch (error: unknown){
-            let message: string = "Não foi possível atualizar registro"
-            if (error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({ message })
-        }
-    }
+  @Put("{isbn}")
+  async atualizarLivro(
+    @Path() isbn: number,
+    @Body() dto: LivroDto
+  ): Promise<any> {
+    return this.livroService.atualizarLivro(isbn, dto);
+  }
 
-    removerLivro(req: Request, res: Response) {
-        try{
-            const isbn = Number(req.params.isbn)
-            this.livroService.removerLivro(isbn)
-            res.status(201).send()
-        }catch (error: unknown){
-            let message: string = "Não foi possível remover o registro"
-            if (error instanceof Error){
-                message = error.message
-            }
-            res.status(400).json({ message })
-        }
-    }
+  @Delete("{isbn}")
+  async removerLivro(@Path() isbn: number): Promise<void> {
+    return this.livroService.removerLivro(isbn);
+  }
 }
