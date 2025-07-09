@@ -19,11 +19,12 @@ export class LivroRepository{
         const query = `
         CREATE TABLE IF NOT EXIST biblioteca.Livro (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        nome VARCHAR(255) NOT NULL,
-        cpf DECIMAL(11) NOT NULL UNIQUE,
-        status VARCHAR(20) NOT NULL,
-        categoria_id VARCHAR(255) NOT NULL,
-        curso_id VARCHAR(255) NOT NULL
+        titulo VARCHAR(255) NOT NULL,
+        autor VARCHAR(255) NOT NULL,
+        editora VARCHAR(255) NOT NULL,
+        edicao VARCHAR(255) NOT NULL,
+        isbn DECIMAL(13) NOT NULL,
+        categoria_id VARCHAR(255) NOT NULL
         )`;
     
         try{
@@ -34,30 +35,77 @@ export class LivroRepository{
         }
     }
 
-    insereLivro(livro: LivroEntity){
-        this.livroList.push(livro)
-        return livro
-    }
-    findAll(){
-        return this.livroList
-    }
-    findByISBN(isbn: number) {
-        return this.livroList.find(livro => livro.isbn === isbn)
-    }
-    updateByISBN(isbn: number, dados: Partial<LivroEntity>) {
-        const index = this.findIndex(isbn)
-        Object.assign(this.livroList[index], dados)
-        return this.livroList[index]
-    }
-    removeByISBN(isbn: number) {
-        const index = this.findIndex(isbn)
-        this.livroList.splice(index, 1)
-    }
-    private findIndex( isbn: number):number{
-        const index = this.livroList.findIndex( l => l.isbn == isbn)
-        if(index == -1){
-            throw new Error("ID informado não foi encontrado")
+    async insereLivro(livro: LivroEntity) :Promise<LivroEntity>{
+        const query = "INSERT INTO biblioteca.Livro (titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        try {
+            const resultado = await executarComandoSQL(query, [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoria_id]);
+            console.log('Produto inserido com sucesso, ID: ', resultado.insertId);
+            livro.id = resultado.insertId;
+            return new Promise<LivroEntity>((resolve)=>{
+                resolve(livro);
+            })
+        } catch (err) {
+            console.error('Erro ao inserir o livro:', err);
+            throw err;
         }
-        return index
+    }
+
+    async findAll() :Promise<LivroEntity[]>{
+        const query = "SELECT * FROM biblioteca.Livro";
+        
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            return new Promise<LivroEntity[]>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao listar os livros gerando o erro: ${err}`);
+            throw err;
+        }
+    }
+
+    async findByISBN(isbn: number) :Promise<LivroEntity> {
+        const query = "SELECT * FROM biblioteca.Livro WHERE isbn = ?";
+        
+        try {
+            const resultado = await executarComandoSQL(query, [isbn]);
+            console.log('Produto localizado com sucesso, ISBN: ', resultado);
+            return new Promise<LivroEntity>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao procurar o produto de ISBN ${isbn} gerando o erro: ${err}`);
+            throw err;
+        }
+    }
+
+    async updateLivro(livro: LivroEntity) :Promise<LivroEntity> {
+        const query = "UPDATE biblioteca.Livro set titulo = ?, autor = ?, editora = ?, edicao = ?, categoria_id = ? where isbn = ?;" ;
+        
+            try {
+                const resultado = await executarComandoSQL(query, [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.categoria_id, livro.isbn]);
+                console.log('Usuario atualizado com sucesso, ID: ', resultado);
+                return new Promise<LivroEntity>((resolve)=>{
+                    resolve(resultado);
+                })
+            } catch (err:any) {
+                console.error(`Erro ao atualizar o livro de ID ${livro.isbn} gerando o erro: ${err}`);
+                throw err;
+            }
+    }
+    async removeByISBN(livro: LivroEntity) :Promise<LivroEntity> {
+        const query = "DELETE FROM biblioteca.Livro where isbn = ?;" ;
+        
+        try {
+            const resultado = await executarComandoSQL(query, [livro.isbn]);
+            console.log('Produto deletado com sucesso: ', livro);
+            return new Promise<LivroEntity>((resolve)=>{
+                resolve(livro);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao deletar o livro de ISBN ${livro.isbn} gerando o erro: ${err}`);
+            throw err;
+        }
     }
 }

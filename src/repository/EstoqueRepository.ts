@@ -1,16 +1,35 @@
 import { EstoqueEntity } from "../model/entity/EstoqueEntity"
+import { executarComandoSQL } from "../database/mysql"
 
 export class EstoqueRepository{
     private static instance: EstoqueRepository
-    private estoqueList: EstoqueEntity[] = []
 
-    constructor(){}
+    constructor(){
+        this.createTable();
+    }
 
     static getInstance(): EstoqueRepository{
         if( !this.instance ){
             this.instance = new EstoqueRepository()
         }
         return EstoqueRepository.instance
+    }
+
+    private async createTable(){
+        const query = `
+        CREATE TABLE IF NOT EXIST biblioteca.Estoque (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        codigo
+        livro_isbn
+        disponível
+        )`;
+    
+        try{
+        const resultado = await executarComandoSQL(query, []);
+        console.log('Tabela Usuário criado com sucesso', resultado)
+        } catch (err){
+        console.log('Erro', err)
+        }
     }
 
     criarExemplar(exemplar: EstoqueEntity){

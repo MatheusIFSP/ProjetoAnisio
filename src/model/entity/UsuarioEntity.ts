@@ -2,27 +2,23 @@ export class UsuarioEntity {
     id: number
     nome: string
     cpf: string
-    status: string
+    status: 'Ativo' | 'Inativo' | 'Suspenso'
     categoria_id: string
     curso_id: string
 
     constructor(
-        id: number | undefined,
-        nome: string,
+        id?: number,
+        nome?: string,
         cpf: string,
-        status: string = "Ativo",
-        categoria_id: string,
-        curso_id: string
+        status?: string,
+        categoria_id?: string,
+        curso_id?: string
     ){
-        this.id = id ?? this.gerarId()
-        this.nome = nome
+        this.id = id || 0
+        this.nome = nome || ''
         this.cpf = cpf
-        this.status = status
-        this.categoria_id = categoria_id
-        this.curso_id = curso_id
-    }
-
-    private gerarId(): number{
-        return parseInt((Date.now() /100).toString(),10)
+        this.status = "Ativo"
+        this.categoria_id = categoria_id || ''
+        this.curso_id = curso_id || ''
     }
 }

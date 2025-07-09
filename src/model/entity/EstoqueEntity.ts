@@ -1,21 +1,20 @@
 export class EstoqueEntity {
     id: number
-    codigo: string
     livro_isbn: number
-    disponivel: boolean
+    quantidade: number
+    quantidade_emprestada: number
+    disponivel: 'disponível' | 'indisponível'
 
     constructor(
-        id: number | undefined,
-        livro_isbn: number,
-        codigo: string,
-        disponivel: boolean
+        id?: number,
+        livro_isbn?: number | 0,
+        quantidade?: number,
+        quantidade_emprestada?: number
     ){
-        this.id = id ?? this.gerarId()
+        this.id = id || 0 
         this.livro_isbn = livro_isbn
-        this.codigo = codigo
-        this.disponivel = disponivel
-    }
-    private gerarId(): number{
-        return parseInt((Date.now() /100).toString(),10)
+        this.quantidade = quantidade
+        this.quantidade_emprestada = quantidade_emprestada || 0
+        this.disponivel = 'disponível'
     }
 }
