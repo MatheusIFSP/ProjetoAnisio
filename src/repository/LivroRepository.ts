@@ -29,7 +29,7 @@ export class LivroRepository{
     
         try{
         const resultado = await executarComandoSQL(query, []);
-        console.log('Tabela Usuário criado com sucesso', resultado)
+        console.log('Tabela Livro criado com sucesso', resultado)
         } catch (err){
         console.log('Erro', err)
         }
@@ -40,7 +40,7 @@ export class LivroRepository{
         
         try {
             const resultado = await executarComandoSQL(query, [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoria_id]);
-            console.log('Produto inserido com sucesso, ID: ', resultado.insertId);
+            console.log('Livro inserido com sucesso, ID: ', resultado.insertId);
             livro.id = resultado.insertId;
             return new Promise<LivroEntity>((resolve)=>{
                 resolve(livro);
@@ -70,7 +70,7 @@ export class LivroRepository{
         
         try {
             const resultado = await executarComandoSQL(query, [isbn]);
-            console.log('Produto localizado com sucesso, ISBN: ', resultado);
+            console.log('Livro localizado com sucesso, ISBN: ', resultado);
             return new Promise<LivroEntity>((resolve)=>{
                 resolve(resultado);
             })
@@ -81,11 +81,11 @@ export class LivroRepository{
     }
 
     async updateLivro(livro: LivroEntity) :Promise<LivroEntity> {
-        const query = "UPDATE biblioteca.Livro set titulo = ?, autor = ?, editora = ?, edicao = ?, categoria_id = ? where isbn = ?;" ;
+        const query = "UPDATE biblioteca.Livro SET titulo = ?, autor = ?, editora = ?, edicao = ?, categoria_id = ? WHERE isbn = ?;" ;
         
             try {
                 const resultado = await executarComandoSQL(query, [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.categoria_id, livro.isbn]);
-                console.log('Usuario atualizado com sucesso, ID: ', resultado);
+                console.log('Livro atualizado com sucesso, ID: ', resultado);
                 return new Promise<LivroEntity>((resolve)=>{
                     resolve(resultado);
                 })
@@ -99,7 +99,7 @@ export class LivroRepository{
         
         try {
             const resultado = await executarComandoSQL(query, [livro.isbn]);
-            console.log('Produto deletado com sucesso: ', livro);
+            console.log('Livro deletado com sucesso: ', livro);
             return new Promise<LivroEntity>((resolve)=>{
                 resolve(livro);
             })

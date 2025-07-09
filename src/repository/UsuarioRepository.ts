@@ -39,7 +39,7 @@ export class UsuarioRepository{
 
         try {
             const resultado = await executarComandoSQL(query, [usuario.nome, usuario.cpf, usuario.status, usuario.categoria_id, usuario.curso_id]);
-            console.log('Produto inserido com sucesso, ID: ', resultado.insertId);
+            console.log('Usuário inserido com sucesso, ID: ', resultado.insertId);
             usuario.id = resultado.insertId;
             return new Promise<UsuarioEntity>((resolve)=>{
                 resolve(usuario);
@@ -59,7 +59,7 @@ export class UsuarioRepository{
                 resolve(resultado);
             })
         } catch (err:any) {
-            console.error(`Falha ao listar os usuarios gerando o erro: ${err}`);
+            console.error(`Falha ao listar os usuários gerando o erro: ${err}`);
             throw err;
         }
     }
@@ -69,7 +69,7 @@ export class UsuarioRepository{
 
         try {
             const resultado = await executarComandoSQL(query, [id]);
-            console.log('Produto localizado com sucesso, ID: ', resultado);
+            console.log('Usuário localizado com sucesso, ID: ', resultado);
             return new Promise<UsuarioEntity>((resolve)=>{
                 resolve(resultado);
             })
@@ -80,26 +80,26 @@ export class UsuarioRepository{
     }
 
     async updateUsuario(usuario: UsuarioEntity) :Promise<UsuarioEntity> {
-            const query = "UPDATE biblioteca.Usuario set nome = ?, cpf = ?, status = ?, categoria_id = ?, curso_id = ? where id = ?;" ;
+        const query = "UPDATE biblioteca.Usuario SET nome = ?, cpf = ?, status = ?, categoria_id = ?, curso_id = ? WHERE id = ?;" ;
 
-            try {
-                const resultado = await executarComandoSQL(query, [usuario.nome, usuario.cpf, usuario.status, usuario.categoria_id, usuario.curso_id, usuario.id]);
-                console.log('Usuario atualizado com sucesso, ID: ', resultado);
-                return new Promise<UsuarioEntity>((resolve)=>{
-                    resolve(resultado);
-                })
-            } catch (err:any) {
-                console.error(`Erro ao atualizar o usuário de ID ${usuario.id} gerando o erro: ${err}`);
-                throw err;
-            }
+        try {
+            const resultado = await executarComandoSQL(query, [usuario.nome, usuario.cpf, usuario.status, usuario.categoria_id, usuario.curso_id, usuario.id]);
+            console.log('Usuário atualizado com sucesso, ID: ', resultado);
+            return new Promise<UsuarioEntity>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Erro ao atualizar o usuário de ID ${usuario.id} gerando o erro: ${err}`);
+            throw err;
         }
+    }
 
     async removeById(usuario:UsuarioEntity) :Promise<UsuarioEntity> {
         const query = "DELETE FROM biblioteca.Usuario where id = ?;" ;
 
         try {
             const resultado = await executarComandoSQL(query, [usuario.id]);
-            console.log('Produto deletado com sucesso: ', usuario);
+            console.log('Usuário deletado com sucesso: ', usuario);
             return new Promise<UsuarioEntity>((resolve)=>{
                 resolve(usuario);
             })

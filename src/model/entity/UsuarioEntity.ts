@@ -7,9 +7,9 @@ export class UsuarioEntity {
     curso_id: string
 
     constructor(
+        cpf: string,
         id?: number,
         nome?: string,
-        cpf: string,
         status?: string,
         categoria_id?: string,
         curso_id?: string

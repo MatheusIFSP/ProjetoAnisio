@@ -19,55 +19,93 @@ export class EstoqueRepository{
         const query = `
         CREATE TABLE IF NOT EXIST biblioteca.Estoque (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        codigo
-        livro_isbn
-        disponível
+        livro_isbn DECIMAL(13) NOT NULL,
+        quantidade DECIMAL(10) NOT NULL,
+        quantidade_emprestada(10) NOT NULL,
+        disponível VARCHAR(15) NOT NULL 
         )`;
     
         try{
         const resultado = await executarComandoSQL(query, []);
-        console.log('Tabela Usuário criado com sucesso', resultado)
+        console.log('Tabela Estoque criado com sucesso', resultado)
         } catch (err){
         console.log('Erro', err)
         }
     }
-
-    criarExemplar(exemplar: EstoqueEntity){
-        this.estoqueList.push(exemplar)
-        return exemplar
-    }
-    
-    insereEstoque(estoque: EstoqueEntity) {
-        this.estoqueList.push(estoque)
-        return estoque
-    }
-
-    findAll() {
-        return this.estoqueList
-    }
-
-    findByCod(codigo: string) {
-        const exemplar = this.estoqueList.find(e => e.codigo === codigo)
-        if (!exemplar) {
-            throw new Error ("Exemplar não encontrado")
+ 
+    async insereEstoque(estoque: EstoqueEntity) :Promise<EstoqueEntity> {
+        const query = "INSERT INTO biblioteca.Estoque (livro_isbn, quantidade, quantidade_emprestada, disponivel) VALUES (?, ?, ?, ?)";
+        
+        try {
+            const resultado = await executarComandoSQL(query, [estoque.livro_isbn, estoque.quantidade, estoque.quantidade_emprestada, estoque.disponivel]);
+            console.log('Livro inserido com sucesso, ISBN: ', resultado.insertId);
+            estoque.id = resultado.insertId;
+            return new Promise<EstoqueEntity>((resolve)=>{
+                resolve(estoque);
+            })
+        } catch (err) {
+            console.error('Erro ao inserir no estoque:', err);
+            throw err;
         }
-        return exemplar
     }
 
-    findById(id: number) {
-        const index = this.findIndex(id)
-        return this.estoqueList[index]
+    async findAll() :Promise<EstoqueEntity[]> {
+        const query = "SELECT * FROM biblioteca.Estoque";
+        
+        try {
+            const resultado = await executarComandoSQL(query, []);
+            return new Promise<EstoqueEntity[]>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao listar o estoque gerando o erro: ${err}`);
+            throw err;
+        }
     }
 
-    updateById(id: number, dados: Partial<EstoqueEntity>) {
-            const index = this.findIndex(id)
-            Object.assign(this.estoqueList[index], dados)
-            return this.estoqueList[index]
+    async findById(id: number) :Promise<EstoqueEntity> {
+        const query = "SELECT * FROM biblioteca.Estoque WHERE id = ?";
+        
+        try {
+            const resultado = await executarComandoSQL(query, [id]);
+            console.log('Estoque localizado com sucesso, ID: ', resultado);
+            return new Promise<EstoqueEntity>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao procurar o produto de ID ${id} gerando o erro: ${err}`);
+            throw err;
+        }
     }
 
-    removeById(id: number) {
-        const index = this.findIndex(id)
-        this.estoqueList.splice(index, 1)
+    async updateEstoque(estoque: EstoqueEntity) :Promise<EstoqueEntity> {
+        const query = "UPDATE biblioteca.Estoque SET livro_isbn = ?, quantidade = ?, quantidade_emprestada = ?, disponivel = ? WHERE id = ?;" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [estoque.livro_isbn, estoque.quantidade, estoque.quantidade_emprestada, estoque.disponivel, estoque.id]);
+            console.log('Estoque atualizado com sucesso, ID: ', resultado);
+            return new Promise<EstoqueEntity>((resolve)=>{
+                resolve(resultado);
+            })
+        } catch (err:any) {
+            console.error(`Erro ao atualizar o estoque de ID ${estoque.id} gerando o erro: ${err}`);
+            throw err;
+        }
+    }
+
+    async removeById(estoque: EstoqueEntity) :Promise<EstoqueEntity> {
+        const query = "DELETE FROM biblioteca.Estoque where id = ?;" ;
+
+        try {
+            const resultado = await executarComandoSQL(query, [estoque.id]);
+            console.log('Estoque deletado com sucesso: ', estoque);
+            return new Promise<EstoqueEntity>((resolve)=>{
+                resolve(estoque);
+            })
+        } catch (err:any) {
+            console.error(`Falha ao deletar o estoque de ID ${estoque.id} gerando o erro: ${err}`);
+            throw err;
+        }
     }
 
     Indisponivel(id: number) {
@@ -78,13 +116,5 @@ export class EstoqueRepository{
     Disponivel(id: number) {
         const index = this.findIndex(id)
         this.estoqueList[index].disponivel = true
-    }
-    
-    private findIndex( id: number):number {
-        const index = this.estoqueList.findIndex( es => es.id == id)
-        if(index == -1){
-            throw new Error("ID informado não foi encontrado")
-        }
-        return index
     }
 }
