@@ -16,7 +16,7 @@ export class UsuarioController extends Controller {
       @Res() notFound: TsoaResponse<400, BasicResponseDto>
   ): Promise <void> {
       try {
-        const usuario = await this.usuarioService.criarUsuario(dto);
+        const usuario = await this.usuarioService.(dto);
         return success(201, new BasicResponseDto("Usuário criado com sucesso", usuario));
     } catch (error: any) {
         return notFound(400, new BasicResponseDto(error.message, null));

@@ -1,10 +1,12 @@
 import { LivroEntity } from "../model/entity/LivroEntity"
+import { executarComandoSQL } from "../database/mysql"
 
 export class LivroRepository{
     private static instance: LivroRepository
-    private livroList: LivroEntity[] = []
 
-    constructor(){}
+    constructor(){
+        this.createTable();
+    }
 
     static getInstance(): LivroRepository{
         if( !this.instance ){
@@ -12,6 +14,26 @@ export class LivroRepository{
         }
         return LivroRepository.instance
     }
+
+    private async createTable(){
+        const query = `
+        CREATE TABLE IF NOT EXIST biblioteca.Livro (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(255) NOT NULL,
+        cpf DECIMAL(11) NOT NULL UNIQUE,
+        status VARCHAR(20) NOT NULL,
+        categoria_id VARCHAR(255) NOT NULL,
+        curso_id VARCHAR(255) NOT NULL
+        )`;
+    
+        try{
+        const resultado = await executarComandoSQL(query, []);
+        console.log('Tabela Usuário criado com sucesso', resultado)
+        } catch (err){
+        console.log('Erro', err)
+        }
+    }
+
     insereLivro(livro: LivroEntity){
         this.livroList.push(livro)
         return livro

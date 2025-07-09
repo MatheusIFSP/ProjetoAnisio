@@ -5,7 +5,7 @@ const dbConfig = {
     port: 3306,
     user: 'root',
     password: 'ifsp',
-    database: 'vendas'
+    database: 'biblioteca'
 };
 
 const mysqlConnection: Connection = mysql.createConnection(dbConfig);
