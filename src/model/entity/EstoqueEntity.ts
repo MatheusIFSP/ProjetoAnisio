@@ -5,7 +5,7 @@ export class EstoqueEntity {
     quantidade_emprestada: number
     disponivel: boolean
 
-    constructor(id?: number, livro_isbn?: number, quantidade?: number, quantidade_emprestada?: number){
+    constructor(id?: number, livro_isbn?: number, quantidade?: number, quantidade_emprestada?: number, disponivel?: boolean){
         this.id = id || 0 
         this.livro_isbn = livro_isbn || 0
         this.quantidade = quantidade || 0

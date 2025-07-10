@@ -2,10 +2,7 @@ import { UsuarioEntity } from "../model/entity/UsuarioEntity"
 import { LivroEntity } from "../model/entity/LivroEntity"
 import { executarComandoSQL } from "../database/mysql"
 
-export class CatalogoRepository {
-    private categoriaUsuario = ["Professor", "Aluno", "Bibliotecário"]
-    private cursos = ["ADS", "Pedagogia", "Administração"]
-    private categoriaLivro = ["Romance", "Computação", "Letras", "Gestão"]
+
     private static instance: CatalogoRepository
 
     constructor(){}

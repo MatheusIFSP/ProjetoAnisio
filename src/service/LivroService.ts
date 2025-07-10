@@ -35,8 +35,18 @@ export class LivroService{
 
         const livro = new LivroEntity(id, titulo, autor, editora, edicao, isbn, categoria_id)
 
-        await this.livroRepository.updateLivro(livro, isbn);
+        await this.livroRepository.updateLivro(isbn, livro);
         console.log("Service - Update ", livro);
+        return livro;
+    }
+
+    async removerLivro(livroData: any): Promise<LivroEntity> {
+        const { id, titulo, autor, editora, edicao, isbn, categoria_id } = livroData;
+
+        const livro = new LivroEntity(id, titulo, autor, editora, edicao, isbn, categoria_id)
+
+        await this.livroRepository.removeByISBN(livro);
+        console.log("Service - Delete ", livro);
         return livro;
     }
 
@@ -52,15 +62,5 @@ export class LivroService{
         if (LivroExistente){
             throw new Error("Esse livro já está cadastrado")
         }
-    }
-
-    async removerLivro(livroData: any): Promise<LivroEntity> {
-        const { id, titulo, autor, editora, edicao, isbn, categoria_id } = livroData;
-
-        const livro = new LivroEntity(id, titulo, autor, editora, edicao, isbn, categoria_id)
-
-        await this.livroRepository.removeByISBN(livro);
-        console.log("Service - Delete ", livro);
-        return livro;
     }
 }

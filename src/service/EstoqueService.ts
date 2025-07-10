@@ -6,28 +6,40 @@ export class EstoqueService {
     private estoqueRepository = EstoqueRepository.getInstance()
     private livroRepository = LivroRepository.getInstance()
 
-    criarEstoque(novoEstoque: EstoqueEntity) {
-        const livro = this.livroRepository.findByISBN(novoEstoque.livro_isbn)
-        if (!livro) {
-            throw new Error("Livro associado não encontrado")
-        }
-        return this.estoqueRepository.insereEstoque(novoEstoque)
+    async criarEstoque(estoqueData: any): Promise<EstoqueEntity> {
+        const { livro_isbn, quantidade, quantidade_emprestada, disponivel } = estoqueData;
+
+        const estoque = new EstoqueEntity(undefined, livro_isbn, quantidade, quantidade_emprestada, disponivel)
+
+        const novoEstoque = await this.estoqueRepository.insereEstoque(estoque)
+        console.log("Service - Insert", novoEstoque)
+        return novoEstoque;
     }
 
-    listarEstoque() {
-        return this.estoqueRepository.findAll()
+    async listarEstoque(): Promise<EstoqueEntity[]> {
+        const estoque =  await this.estoqueRepository.findAll();
+        console.log("Service - Filtrar Todos", estoque);
+        return estoque;
     }
 
-    buscarPorCodigo(codigo: string) {
-        return this.estoqueRepository.findByCod(codigo)
+    async atualizarEstoque(estoqueData: any): Promise<EstoqueEntity> {
+        const { id, livro_isbn, quantidade, quantidade_emprestada, disponivel} = estoqueData;
+
+        const estoque = new EstoqueEntity(id, livro_isbn, quantidade, quantidade_emprestada, disponivel)
+
+        await this.estoqueRepository.updateEstoque(estoque);
+        console.log("Service - Update ", estoque);
+        return estoque;
     }
 
-    atualizarEstoque(id: number, dados: Partial <EstoqueEntity>) {
-        return this.estoqueRepository.updateById(id, dados)
-    }
+    async removerEstoque(estoqueData: any) :Promise<EstoqueEntity> {
+        const { id, livro_isbn, quantidade, quantidade_emprestada, disponivel } = estoqueData;
 
-    removerEstoque(id: number) {
-        return this.estoqueRepository.removeById(id)
+        const estoque = new EstoqueEntity(id, livro_isbn, quantidade, quantidade_emprestada, disponivel)
+
+        await this.estoqueRepository.removeById(id);
+        console.log("Service - Delete ", estoque);
+        return estoque;
     }
 
     marcarIndisponivel(id: number) {
