@@ -8,27 +8,48 @@ export class UsuarioService{
     private catalogoRepository = CatalogoRepository.getInstance()
     private emprestimoRepository = EmprestimoRepository.getInstance()
 
-    criarUsuario(usuario: UsuarioEntity) {
-        if (!this.validarCPF(usuario.cpf)) {
-            throw new Error("CPF inválido")
-        }
-        this.verificarCPFduplicado(usuario.cpf);
-        this.validarCategoriaECurso(usuario.categoria_id, usuario.curso_id)
+import { UsuarioEntity } from "../model/entity/UsuarioEntity";
+import { UsuarioRepository } from "../repository/UsuarioRepository";
 
-        return this.usuarioRepository.insereUsuario(usuario)
-    }
+export class UsuarioService {
+  private usuarioRepository = UsuarioRepository.getInstance();
 
-    listarUsuario() {
-        return this.usuarioRepository.findAll()
-    }
+  async criarUsuario(data: any): Promise<UsuarioEntity> {
+    const { nome, cpf, status, categoria_id, curso_id } = data;
+    const usuario = new UsuarioEntity(undefined, nome, cpf, status, categoria_id, curso_id);
+    const novoUsuario = await this.usuarioRepository.insereUsuario(usuario);
+    console.log("Service - Criar", novoUsuario);
+    return novoUsuario;
+  }
 
-    buscarPorId(id: number) {
-        return this.usuarioRepository.findById(id)
-    }
+  async atualizarUsuario(data: any): Promise<UsuarioEntity> {
+    const { id, nome, cpf, status, categoria_id, curso_id } = data;
+    const usuario = new UsuarioEntity(id, nome, cpf, status, categoria_id, curso_id);
+    await this.usuarioRepository.updateUsuario(usuario);
+    console.log("Service - Atualizar", usuario);
+    return usuario;
+  }
 
-    atualizarUsuario(id: number, dados: Partial<UsuarioEntity>){
-            return this.usuarioRepository.updateById(id, dados)
-        }
+  async deletarUsuario(data: any): Promise<UsuarioEntity> {
+    const { id } = data;
+    const usuario = await this.usuarioRepository.findById(id);
+    await this.usuarioRepository.removeById(id);
+    console.log("Service - Deletar", usuario);
+    return usuario;
+  }
+
+  async buscarUsuarioPorId(id: any): Promise<UsuarioEntity> {
+    const usuario = await this.usuarioRepository.findById(parseInt(id));
+    console.log("Service - Buscar", usuario);
+    return usuario;
+  }
+
+  async listarUsuarios(): Promise<UsuarioEntity[]> {
+    const usuarios = await this.usuarioRepository.findAll();
+    console.log("Service - Listar Todos", usuarios);
+    return usuarios;
+  }
+}
     
     validarCPF( cpf: string ) {
         if(typeof cpf !== 'string')
@@ -62,13 +83,5 @@ export class UsuarioService{
         if (existe) {
             throw new Error("CPF já cadastrado")
         }
-    }
-
-    removerUsuario(id: number) {
-        const emprestimos = this.emprestimoRepository.findByUsuarioId(id)
-        if (emprestimos.length > 0) {
-            throw new Error("Usuário tem empréstimo pendente")
-        }
-        this.usuarioRepository.removeById(id)
     }
 }

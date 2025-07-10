@@ -1,4 +1,5 @@
 import { UsuarioEntity } from "../model/entity/UsuarioEntity"
+import { LivroEntity } from "../model/entity/LivroEntity"
 import { executarComandoSQL } from "../database/mysql"
 
 export class CatalogoRepository {
