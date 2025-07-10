@@ -58,7 +58,7 @@ async criarUsuario(data: any): Promise<UsuarioEntity> {
     return usuarios;
   }
     
-    validarCPF( cpf: string ) {
+    async validarCPF( cpf: string ) {
         if(typeof cpf !== 'string')
             throw new Error ("Permitido apenas números")
         cpf = cpf.replace(/[^\d]+/g, '')
@@ -75,7 +75,7 @@ async criarUsuario(data: any): Promise<UsuarioEntity> {
         return rest(10) === cpfList[9] && rest(11) === cpfList[10]
     }
 
-    validarCategoriaECurso(categoria_id: string, curso_id: string) {
+    async validarCategoriaECurso(categoria_id: string, curso_id: string) {
         if (!this.catalogoRepository.existeCategoriaUsuario(categoria_id)) {
             throw new Error("Categoria inválida ou inexistente")
         }
@@ -85,8 +85,10 @@ async criarUsuario(data: any): Promise<UsuarioEntity> {
         return true;
     }
 
-    verificarCPFduplicado(cpf: string) {
-        const existe = this.usuarioRepository.findAll().some(u => u.cpf === cpf)
+    async verificarCPFduplicado(cpf: string) :Promise<void>{
+        const usuarios = await this.usuarioRepository.findAll()
+
+        const existe = usuarios.some(u => u.cpf === cpf)
         if (existe) {
             throw new Error("CPF já cadastrado")
         }
