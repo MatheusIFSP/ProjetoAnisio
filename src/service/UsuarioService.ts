@@ -8,37 +8,45 @@ export class UsuarioService{
     private catalogoRepository = CatalogoRepository.getInstance()
     private emprestimoRepository = EmprestimoRepository.getInstance()
 
-import { UsuarioEntity } from "../model/entity/UsuarioEntity";
-import { UsuarioRepository } from "../repository/UsuarioRepository";
-
-export class UsuarioService {
-  private usuarioRepository = UsuarioRepository.getInstance();
-
-  async criarUsuario(data: any): Promise<UsuarioEntity> {
+async criarUsuario(data: any): Promise<UsuarioEntity> {
     const { nome, cpf, status, categoria_id, curso_id } = data;
-    const usuario = new UsuarioEntity(undefined, nome, cpf, status, categoria_id, curso_id);
+
+    if (!this.validarCPF(cpf)) {
+      throw new Error("CPF inválido");
+    }
+
+    await this.verificarCPFduplicado(cpf);
+    this.validarCategoriaECurso(categoria_id, curso_id);
+
+    const usuario = new UsuarioEntity(nome, cpf, status, categoria_id, curso_id);
     const novoUsuario = await this.usuarioRepository.insereUsuario(usuario);
     console.log("Service - Criar", novoUsuario);
     return novoUsuario;
   }
 
-  async atualizarUsuario(data: any): Promise<UsuarioEntity> {
-    const { id, nome, cpf, status, categoria_id, curso_id } = data;
+  async atualizarUsuario(Usuariodata: any): Promise<UsuarioEntity> {
+    const { id, nome, cpf, status, categoria_id, curso_id } = Usuariodata;
+
+    this.validarCategoriaECurso(categoria_id, curso_id);
+
     const usuario = new UsuarioEntity(id, nome, cpf, status, categoria_id, curso_id);
-    await this.usuarioRepository.updateUsuario(usuario);
+
+    await this.usuarioRepository.updateUsuario(id);
     console.log("Service - Atualizar", usuario);
     return usuario;
   }
 
-  async deletarUsuario(data: any): Promise<UsuarioEntity> {
-    const { id } = data;
-    const usuario = await this.usuarioRepository.findById(id);
-    await this.usuarioRepository.removeById(id);
-    console.log("Service - Deletar", usuario);
-    return usuario;
-  }
+  async deletarUsuario(Usuariodata: any): Promise<UsuarioEntity> {
+    const { id, nome, cpf, status, categoria_id, curso_id } = Usuariodata;
 
-  async buscarUsuarioPorId(id: any): Promise<UsuarioEntity> {
+    const usuario = new UsuarioEntity(id, nome, cpf, status, categoria_id, curso_id)
+
+    await this.usuarioRepository.removeById(id);
+    console.log("Service - Delete ", usuario);
+    return usuario;
+    }
+
+  async buscarUsuarioById(id: any): Promise<UsuarioEntity> {
     const usuario = await this.usuarioRepository.findById(parseInt(id));
     console.log("Service - Buscar", usuario);
     return usuario;
@@ -49,7 +57,6 @@ export class UsuarioService {
     console.log("Service - Listar Todos", usuarios);
     return usuarios;
   }
-}
     
     validarCPF( cpf: string ) {
         if(typeof cpf !== 'string')
