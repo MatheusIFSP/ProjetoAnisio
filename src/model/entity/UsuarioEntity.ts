@@ -6,14 +6,7 @@ export class UsuarioEntity {
     categoria_id: string
     curso_id: string
 
-    constructor(
-        cpf: string,
-        id?: number,
-        nome?: string,
-        status?: string,
-        categoria_id?: string,
-        curso_id?: string
-    ){
+    constructor(id?: number, nome?: string, cpf?: string, categoria_id?: string, curso_id?: string){
         this.id = id || 0
         this.nome = nome || ''
         this.cpf = cpf

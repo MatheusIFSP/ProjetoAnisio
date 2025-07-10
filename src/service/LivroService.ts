@@ -6,28 +6,38 @@ export class LivroService{
     private livroRepository = LivroRepository.getInstance()
     private catalogoRepository = CatalogoRepository.getInstance()
 
-    criarLivro(novoLivro: LivroEntity){
-        if (!this.catalogoRepository.existeCategoriaLivro(novoLivro.categoria_id)) {
-            throw new Error ("Categoria de livro inválida")
-        }
-        this.verificarLivro(novoLivro.autor, novoLivro.editora, novoLivro.edicao)
-        return this.livroRepository.insereLivro(novoLivro)
+    async criarLivro(livroData: any): Promise<LivroEntity>{
+        const { titulo, autor, editora, edicao, isbn, categoria_id } = livroData
+
+        const livro = new LivroEntity(undefined, titulo, autor, editora, edicao, isbn, categoria_id)
+
+        const novoLivro = await this.livroRepository.insereLivro(livro);
+        console.log("Service - Insert", novoLivro);
+        return novoLivro;
     }
 
-    listarLivro(){
-        return this.livroRepository.findAll()
+    async listarLivro() :Promise<LivroEntity[]>{
+        const livros = await this.livroRepository.findAll();
+        console.log("Service - Filtrar todos", livros);
+        return livros;
     }
 
-    buscarPorISBN(isbn: number) {
-        const livro = this.livroRepository.findByISBN(isbn)
-        if (!livro){
-            throw new Error("Livro não encontrado")
-        }
+    async buscarPorISBN(livroData: any): Promise<LivroEntity> {
+        const idNumber = parseInt(livroData, 10);
+
+        const livro =  await this.livroRepository.findByISBN(idNumber);
+        console.log("Service - Filtrar", livro);
         return livro;
     }
 
-    atualizarLivro(isbn: number, dados: Partial<LivroEntity>){
-        return this.livroRepository.updateByISBN(isbn, dados)
+    async atualizarLivro(livroData: any) :Promise<LivroEntity>{
+        const { id, titulo, autor, editora, edicao, isbn, categoria_id } = livroData;
+
+        const livro = new LivroEntity(id, titulo, autor, editora, edicao, isbn, categoria_id)
+
+        await this.livroRepository.updateLivro(livro, isbn);
+        console.log("Service - Update ", livro);
+        return livro;
     }
 
     verificarLivro(autor: string, editora: string, edicao: string) {
@@ -44,7 +54,13 @@ export class LivroService{
         }
     }
 
-    removerLivro(isbn: number) {
-        return this.livroRepository.removeByISBN(isbn)
+    async removerLivro(livroData: any): Promise<LivroEntity> {
+        const { id, titulo, autor, editora, edicao, isbn, categoria_id } = livroData;
+
+        const livro = new LivroEntity(id, titulo, autor, editora, edicao, isbn, categoria_id)
+
+        await this.livroRepository.removeByISBN(livro);
+        console.log("Service - Delete ", livro);
+        return livro;
     }
 }
