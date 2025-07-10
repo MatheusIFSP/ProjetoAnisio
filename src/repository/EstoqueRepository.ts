@@ -17,7 +17,7 @@ export class EstoqueRepository{
 
     private async createTable(){
         const query = `
-        CREATE TABLE IF NOT EXIST biblioteca.Estoque (
+        CREATE TABLE IF NOT EXISTS biblioteca.Estoque (
         id INT AUTO_INCREMENT PRIMARY KEY,
         livro_isbn DECIMAL(13) NOT NULL,
         quantidade DECIMAL(10) NOT NULL,
@@ -73,7 +73,7 @@ export class EstoqueRepository{
                 resolve(resultado);
             })
         } catch (err:any) {
-            console.error(`Falha ao procurar o produto de ID ${id} gerando o erro: ${err}`);
+            console.error(`Falha ao procurar o estoque de ID ${id} gerando o erro: ${err}`);
             throw err;
         }
     }
@@ -93,28 +93,35 @@ export class EstoqueRepository{
         }
     }
 
-    async removeById(estoque: EstoqueEntity) :Promise<EstoqueEntity> {
+    async removeById(id: number) :Promise<void> {
         const query = "DELETE FROM biblioteca.Estoque where id = ?;" ;
 
         try {
-            const resultado = await executarComandoSQL(query, [estoque.id]);
-            console.log('Estoque deletado com sucesso: ', estoque);
-            return new Promise<EstoqueEntity>((resolve)=>{
-                resolve(estoque);
-            })
-        } catch (err:any) {
-            console.error(`Falha ao deletar o estoque de ID ${estoque.id} gerando o erro: ${err}`);
+            await executarComandoSQL(query, [id]);
+            console.log(`Estoque ID ${id} removido com sucesso.`);
+        } catch (err) {
+            console.error(`Erro ao remover estoque ID ${id}:`, err);
             throw err;
         }
     }
 
-    Indisponivel(id: number) {
-        const index = this.findIndex(id)
-        this.estoqueList[index].disponivel = false
+    async Indisponivel(id: number) :Promise<void> {
+        const query = "UPDATE biblioteca.estoque SET disponivel = false WHERE id = ?";
+        try {
+            await executarComandoSQL(query, [id]);
+            console.log(`Estoque ${id} marcado como Indisponível`)
+        } catch (err) {
+            console.error(`Erro ao marcar como indisponível: ${err}`)
+        }
     }
 
-    Disponivel(id: number) {
-        const index = this.findIndex(id)
-        this.estoqueList[index].disponivel = true
+    async Disponivel(id: number) :Promise<void> {
+        const query = "UPDATE biblioteca.estoque SET disponivel = true WHERE id = ?";
+        try {
+            await executarComandoSQL(query, [id]);
+            console.log(`Estoque ${id} marcado como Disponível`)
+        } catch (err) {
+            console.error(`Erro ao marcar como disponível: ${err}`)
+        }
     }
 }

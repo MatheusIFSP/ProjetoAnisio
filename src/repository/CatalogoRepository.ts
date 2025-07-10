@@ -1,4 +1,5 @@
 import { UsuarioEntity } from "../model/entity/UsuarioEntity"
+import { executarComandoSQL } from "../database/mysql"
 
 export class CatalogoRepository {
     private categoriaUsuario = ["Professor", "Aluno", "Bibliotecário"]

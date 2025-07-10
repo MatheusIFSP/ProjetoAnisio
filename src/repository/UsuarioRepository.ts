@@ -17,7 +17,7 @@ export class UsuarioRepository{
 
     private async createTable(){
         const query = `
-        CREATE TABLE IF NOT EXIST biblioteca.Usuario (
+        CREATE TABLE IF NOT EXISTS biblioteca.Usuario (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255) NOT NULL,
         cpf DECIMAL(11) NOT NULL UNIQUE,
@@ -94,17 +94,14 @@ export class UsuarioRepository{
         }
     }
 
-    async removeById(usuario:UsuarioEntity) :Promise<UsuarioEntity> {
-        const query = "DELETE FROM biblioteca.Usuario where id = ?;" ;
+    async removeById(id: number) :Promise<void> {
+         const query = "DELETE FROM biblioteca.Usuario where id = ?;" ;
 
         try {
-            const resultado = await executarComandoSQL(query, [usuario.id]);
-            console.log('Usuário deletado com sucesso: ', usuario);
-            return new Promise<UsuarioEntity>((resolve)=>{
-                resolve(usuario);
-            })
-        } catch (err:any) {
-            console.error(`Falha ao deletar o usuário de ID ${usuario.id} gerando o erro: ${err}`);
+            await executarComandoSQL(query, [id]);
+            console.log(`Usuário ID ${id} removido com sucesso.`);
+        } catch (err) {
+            console.error(`Erro ao remover usuário ID ${id}:`, err);
             throw err;
         }
     }

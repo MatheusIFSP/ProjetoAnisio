@@ -17,7 +17,7 @@ export class LivroRepository{
 
     private async createTable(){
         const query = `
-        CREATE TABLE IF NOT EXIST biblioteca.Livro (
+        CREATE TABLE IF NOT EXISTS biblioteca.Livro (
         id INT AUTO_INCREMENT PRIMARY KEY,
         titulo VARCHAR(255) NOT NULL,
         autor VARCHAR(255) NOT NULL,
@@ -80,31 +80,28 @@ export class LivroRepository{
         }
     }
 
-    async updateLivro(livro: LivroEntity) :Promise<LivroEntity> {
+    async updateLivro(isbn: number, livro: LivroEntity) :Promise<LivroEntity> {
         const query = "UPDATE biblioteca.Livro SET titulo = ?, autor = ?, editora = ?, edicao = ?, categoria_id = ? WHERE isbn = ?;" ;
         
             try {
                 const resultado = await executarComandoSQL(query, [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.categoria_id, livro.isbn]);
-                console.log('Livro atualizado com sucesso, ID: ', resultado);
+                console.log('Livro atualizado com sucesso, ISBN ${isbn}: ', resultado);
                 return new Promise<LivroEntity>((resolve)=>{
                     resolve(resultado);
                 })
             } catch (err:any) {
-                console.error(`Erro ao atualizar o livro de ID ${livro.isbn} gerando o erro: ${err}`);
+                console.error(`Erro ao atualizar o livro de ISBN ${isbn} gerando o erro: ${err}`);
                 throw err;
             }
     }
-    async removeByISBN(livro: LivroEntity) :Promise<LivroEntity> {
+    async removeByISBN(isbn: LivroEntity) :Promise<void> {
         const query = "DELETE FROM biblioteca.Livro where isbn = ?;" ;
-        
+
         try {
-            const resultado = await executarComandoSQL(query, [livro.isbn]);
-            console.log('Livro deletado com sucesso: ', livro);
-            return new Promise<LivroEntity>((resolve)=>{
-                resolve(livro);
-            })
-        } catch (err:any) {
-            console.error(`Falha ao deletar o livro de ISBN ${livro.isbn} gerando o erro: ${err}`);
+            await executarComandoSQL(query, [isbn]);
+            console.log(`Livro ISBN ${isbn} removido com sucesso.`);
+        } catch (err) {
+            console.error(`Erro ao remover livro ISBN ${isbn}:`, err);
             throw err;
         }
     }
