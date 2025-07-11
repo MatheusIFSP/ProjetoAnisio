@@ -1,4 +1,4 @@
-export class EstoqueEntity {
+export class EstoqueEntityDto {
     livro_isbn: number
     quantidade: number
     quantidade_emprestada: number
