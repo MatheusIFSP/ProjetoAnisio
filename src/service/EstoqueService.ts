@@ -42,12 +42,24 @@ export class EstoqueService {
         return estoque;
     }
 
-    marcarIndisponivel(id: number) {
-        return this.estoqueRepository.Indisponivel(id)
+    async marcarIndisponivel(id: number): Promise<EstoqueEntity> {
+        const estoque = await this.estoqueRepository.findById(id);
+
+        estoque.disponivel = false;
+
+        const atualizado = await this.estoqueRepository.updateEstoque(estoque);
+        console.log("Estoque marcado como indisponível:", atualizado);
+        return atualizado;
     }
 
-    marcarDisponivel(id: number) {
-        return this.estoqueRepository.Disponivel(id)
+    async marcarDisponivel(id: number): Promise<EstoqueEntity> {
+        const estoque = await this.estoqueRepository.findById(id);
+
+        estoque.disponivel = true;
+
+        const atualizado = await this.estoqueRepository.updateEstoque(estoque);
+        console.log("Estoque marcado como disponível:", atualizado);
+        return atualizado;
     }
 
 }
