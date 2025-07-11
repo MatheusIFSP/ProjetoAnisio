@@ -32,14 +32,14 @@ export class CursosRepository{
     }
 
     async insereCursos(){
-        const cursos = ["ADS", "Pedagogia", "Administração"];
+        const categoria = ["ADS", "Pedagogia", "Administração"];
         await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.Cursos(id INT AUTO_INCREMENT PRIMARY KEY, categoria VARCHAR(100) NOT NULL)", []);
-        for(const categoria of cursos){
+        for(const cursos of categoria){
             try{
-                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.Cursos (categoria) values (?)", [categoria]);
+                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.Cursos (categoria) values (?)", [cursos]);
                 console.log('Categoria criada com sucesso!', resultado);
             } catch(err){
-                console.error(`Erro ao inserir categoria ${categoria}:`, err);
+                console.error(`Erro ao inserir categoria ${cursos}:`, err);
             }
         }
     }
@@ -49,7 +49,7 @@ export class CursosRepository{
         return resultado.map((row: any) => row.categoria);
   }
 
-    async encontrarCursos(categoria: string): Promise<CursosEntity | null> {
+    async findCursos(categoria: string): Promise<CursosEntity | null> {
             const query = `SELECT * FROM biblioteca.Cursos WHERE categoria = ?`;
             const resultado = await executarComandoSQL(query, [categoria]);
     

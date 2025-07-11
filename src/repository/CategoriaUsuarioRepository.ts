@@ -36,10 +36,10 @@ export class CategoriaUsuarioRepository{
         await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(id INT AUTO_INCREMENT PRIMARY KEY, categoria VARCHAR(100) NOT NULL)", []);
         for(const categorias of categoria){
             try{
-                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaUsuario (categoria) values (?)", [categoria]);
+                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaUsuario (categoria) values (?)", [categorias]);
                 console.log('Categoria criada com sucesso!', resultado);
             } catch(err){
-                console.error(`Erro ao inserir categoria ${categoria}:`, err);
+                console.error(`Erro ao inserir categoria ${categorias}:`, err);
             }
         }
     }

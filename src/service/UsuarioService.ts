@@ -1,12 +1,14 @@
 import { UsuarioEntity } from "../model/entity/UsuarioEntity"
 import { UsuarioRepository } from "../repository/UsuarioRepository"
-import { CatalogoRepository } from "../repository/CatalogoRepository"
+import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository"
+import { CursosRepository } from "../repository/CursosRepository"
 import { EmprestimoRepository } from "../repository/EmprestimoRepository"
 
 export class UsuarioService{
     private usuarioRepository = UsuarioRepository.getInstance()
-    private catalogoRepository = CatalogoRepository.getInstance()
+    private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance()
     private emprestimoRepository = EmprestimoRepository.getInstance()
+    private cursosRepository = CursosRepository.getInstance()
 
 async criarUsuario(data: any): Promise<UsuarioEntity> {
     const { nome, cpf, status, categoria_id, curso_id } = data;
@@ -58,39 +60,41 @@ async criarUsuario(data: any): Promise<UsuarioEntity> {
     return usuarios;
   }
     
-    async validarCPF( cpf: string ) {
-        if(typeof cpf !== 'string')
-            throw new Error ("Permitido apenas números")
-        cpf = cpf.replace(/[^\d]+/g, '')
-        if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/))
-            throw new Error ("Necessário ter 11 dígitos e/ou proibido números repetidos")
-        let cpfList = cpf.split('').map(el => +el)
+  async validarCPF( cpf: string ) {
+      if(typeof cpf !== 'string')
+          throw new Error ("Permitido apenas números")
+      cpf = cpf.replace(/[^\d]+/g, '')
+      if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/))
+          throw new Error ("Necessário ter 11 dígitos e/ou proibido números repetidos")
+      let cpfList = cpf.split('').map(el => +el)
 
-        const rest = (count: number) => {
-            const soma = cpfList.slice(0, count -1)
-                .reduce((soma, el, index) => soma + el * (count-index), 0) 
+      const rest = (count: number) => {
+          const soma = cpfList.slice(0, count -1)
+              .reduce((soma, el, index) => soma + el * (count-index), 0) 
                 
-                return (soma * 10) % 11 % 10
-        }
-        return rest(10) === cpfList[9] && rest(11) === cpfList[10]
+              return (soma * 10) % 11 % 10
+      }
+      return rest(10) === cpfList[9] && rest(11) === cpfList[10]
     }
 
-    async validarCategoriaECurso(categoria_id: string, curso_id: string) {
-        if (!this.catalogoRepository.existeCategoriaUsuario(categoria_id)) {
-            throw new Error("Categoria inválida ou inexistente")
-        }
-        if (!this.catalogoRepository.existeCurso(curso_id)) {
-            throw new Error("Curso inválido ou inexistente")
-        }
-        return true;
-    }
+async validarCategoriaECurso(categoria_id: string, curso_id: string): Promise<void> {
+  const categoria = await this.categoriaUsuarioRepository.encontrarCursos(categoria_id);
+  if (!categoria) {
+    throw new Error("Categoria de usuário inválida ou inexistente");
+  }
 
-    async verificarCPFduplicado(cpf: string) :Promise<void>{
-        const usuarios = await this.usuarioRepository.findAll()
+  const curso = await this.cursosRepository.findCursos(curso_id);
+  if (!curso) {
+    throw new Error("Curso inválido ou inexistente");
+  }
+}
 
-        const existe = usuarios.some(u => u.cpf === cpf)
-        if (existe) {
-            throw new Error("CPF já cadastrado")
-        }
-    }
+  async verificarCPFduplicado(cpf: string) :Promise<void>{
+      const usuarios = await this.usuarioRepository.findAll()
+
+      const existe = usuarios.some(u => u.cpf === cpf)
+      if (existe) {
+          throw new Error("CPF já cadastrado")
+      }
+  }
 }

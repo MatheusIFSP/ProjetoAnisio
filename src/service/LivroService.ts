@@ -1,10 +1,10 @@
 import { LivroEntity } from "../model/entity/LivroEntity"
 import { LivroRepository } from "../repository/LivroRepository"
-import { CatalogoRepository } from "../repository/CatalogoRepository"
+import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository"
 
 export class LivroService{
     private livroRepository = LivroRepository.getInstance()
-    private catalogoRepository = CatalogoRepository.getInstance()
+    private categoriaLivroRepository = CategoriaLivroRepository.getInstance()
 
     async criarLivro(livroData: any): Promise<LivroEntity>{
         const { titulo, autor, editora, edicao, isbn, categoria_id } = livroData
@@ -50,17 +50,26 @@ export class LivroService{
         return livro;
     }
 
-    verificarLivro(autor: string, editora: string, edicao: string) {
-        const livros = this.livroRepository.findAll()
+    async verificarLivro(autor: string, editora: string, edicao: string): Promise<void> {
+        const livros = await this.livroRepository.findAll();
 
-        const LivroExistente = livros.some(livro =>
+        const livroExistente = livros.some(
+        (livro) =>
             livro.autor === autor &&
             livro.editora === editora &&
             livro.edicao === edicao
         );
 
-        if (LivroExistente){
-            throw new Error("Esse livro já está cadastrado")
+        if (livroExistente) {
+        throw new Error("Esse livro já está cadastrado");
+        }
+    }
+
+    async validarCategoriaLivro(categoria_id: string): Promise<void> {
+        const categoria = await this.categoriaLivroRepository.findCategoriaLivro(categoria_id);
+
+        if (!categoria) {
+        throw new Error("Categoria de livro inválida ou inexistente");
         }
     }
 }

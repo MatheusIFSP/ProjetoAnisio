@@ -36,10 +36,10 @@ export class CategoriaLivroRepository{
         await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaLivro(id INT AUTO_INCREMENT PRIMARY KEY, categoria VARCHAR(100) NOT NULL)", []);
         for(const categorias of categoria){
             try{
-                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.Cursos (categoria) values (?)", [categoria]);
+                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaLivro (categoria) values (?)", [categorias]);
                 console.log('Categoria criada com sucesso!', resultado);
             } catch(err){
-                console.error(`Erro ao inserir categoria ${categoria}:`, err);
+                console.error(`Erro ao inserir categoria ${categorias}:`, err);
             }
         }
     }
@@ -49,7 +49,7 @@ export class CategoriaLivroRepository{
         return resultado.map((row: any) => row.categoria);
   }
 
-    async encontrarCursos(categoria: string): Promise<CategoriaLivro | null> {
+    async findCategoriaLivro(categoria: string): Promise<CategoriaLivro | null> {
             const query = `SELECT * FROM biblioteca.CategoriaLivro WHERE categoria = ?`;
             const resultado = await executarComandoSQL(query, [categoria]);
     
