@@ -64,7 +64,7 @@ export class UsuarioController extends Controller {
     }
   }
 
-  @Delete()
+  @Delete("{id}")
   async removerUsuario(
     @Path() id: number,
     @Res() success: TsoaResponse<200, BasicResponseDto>,
