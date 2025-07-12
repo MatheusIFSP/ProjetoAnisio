@@ -22,6 +22,12 @@ export class EstoqueService {
         return estoque;
     }
 
+     async buscarEstoqueById(id: any): Promise<EstoqueEntity> {
+        const estoque = await this.estoqueRepository.findById(parseInt(id));
+        console.log("Service - Buscar", estoque);
+        return estoque;
+    }
+
     async atualizarEstoque(estoqueData: any): Promise<EstoqueEntity> {
         const { id, livro_isbn, quantidade, quantidade_emprestada, disponivel} = estoqueData;
 

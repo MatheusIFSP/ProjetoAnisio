@@ -1,10 +1,7 @@
-import {
-  Body, Controller, Delete, Get, Path, Post, Put,
-  Res, Route, Tags, TsoaResponse
-} from "tsoa";
 import { LivroService } from "../service/LivroService";
-import { LivroDto } from "../model/dto/LivroDto"
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { LivroDto } from "../model/dto/LivroDto";
 import { LivroEntity } from "../model/entity/LivroEntity";
 
 @Route("livros")
@@ -27,7 +24,7 @@ export class LivroController extends Controller {
   }
 
   @Get("all")
-  async listarUsuario(
+  async listarLivros(
       @Res() notFound: TsoaResponse<400, BasicResponseDto>,
       @Res() success: TsoaResponse<200, BasicResponseDto>
   ): Promise<any[]> {
@@ -54,7 +51,7 @@ export class LivroController extends Controller {
   }
 
   @Put("isbn/{isbn}")
-  async atualizarUsuario(
+  async atualizarLivro(
     @Body() dto: LivroDto,
     @Res() success: TsoaResponse<200, BasicResponseDto>,
     @Res() notFound: TsoaResponse<400, BasicResponseDto>
