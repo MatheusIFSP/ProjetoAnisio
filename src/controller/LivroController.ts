@@ -5,6 +5,7 @@ import {
 import { LivroService } from "../service/LivroService";
 import { LivroDto } from "../model/dto/LivroDto"
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { LivroEntity } from "../model/entity/LivroEntity";
 
 @Route("livros")
 @Tags("Livros")
@@ -13,7 +14,7 @@ export class LivroController extends Controller {
 
   @Post()
   async criarLivro(
-    @Body() dto: LivroRequestDto,
+    @Body() dto: LivroDto,
     @Res() success: TsoaResponse<201, BasicResponseDto>,
     @Res() fail: TsoaResponse<400, BasicResponseDto>
   ) {
@@ -25,26 +26,58 @@ export class LivroController extends Controller {
     }
   }
 
-  @Get()
-  async listarLivro(): Promise<any[]> {
-    return this.livroService.listarLivro();
+  @Get("all")
+  async listarUsuario(
+      @Res() notFound: TsoaResponse<400, BasicResponseDto>,
+      @Res() success: TsoaResponse<200, BasicResponseDto>
+  ): Promise<any[]> {
+    try {
+      const livro: LivroEntity[] = await this.livroService.listarLivro();
+      return success(200, new BasicResponseDto("Livros listados com sucesso", livro))
+    } catch (error: any) {
+      return notFound(400, new BasicResponseDto(error.message, null));
+    }
   }
 
-  @Get("{isbn}")
-  async buscarPorISBN(@Path() isbn: number): Promise<any> {
-    return this.livroService.buscarPorISBN(isbn);
-  }
-
-  @Put("{isbn}")
-  async atualizarLivro(
+  @Get("isbn/{isbn}")
+  async buscarPorIsbn(
     @Path() isbn: number,
-    @Body() dto: LivroDto
-  ): Promise<any> {
-    return this.livroService.atualizarLivro(isbn, dto);
+    @Res() success: TsoaResponse<200, BasicResponseDto>,
+    @Res() notFound: TsoaResponse<404, BasicResponseDto>
+  ): Promise <void> {
+    try {
+      const livro = await this.livroService.buscarPorISBN(isbn);
+      return success(200, new BasicResponseDto("Livro achado com sucesso", livro));
+    } catch (error: any) {
+      return notFound(404, new BasicResponseDto(error.message, null));
+    }
+  }
+
+  @Put("isbn/{isbn}")
+  async atualizarUsuario(
+    @Body() dto: LivroDto,
+    @Res() success: TsoaResponse<200, BasicResponseDto>,
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>
+  ): Promise <void> {
+    try {
+      const livro = await this.livroService.atualizarLivro(dto);
+      return success(200, new BasicResponseDto("Livro atualizado com sucesso", livro));
+    } catch (error: any) {
+      return notFound(400, new BasicResponseDto(error.message, null));
+    }
   }
 
   @Delete("{isbn}")
-  async removerLivro(@Path() isbn: number): Promise<void> {
-    return this.livroService.removerLivro(isbn);
+  async removerLivro(
+    @Path() isbn: number,
+    @Res() success: TsoaResponse<200, BasicResponseDto>,
+    @Res() notFound: TsoaResponse<400, BasicResponseDto>
+  ): Promise<void>{
+    try {
+      const livro = await this.livroService.removerLivro(isbn);
+      return success(200, new BasicResponseDto("Livro removido com sucesso", livro));
+    } catch (error: any) {
+      return notFound(400, new BasicResponseDto(error.message, undefined));
+    }
   }
 }

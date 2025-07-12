@@ -30,7 +30,7 @@ export class UsuarioController extends Controller {
   ): Promise<any[]> {
     try {
       const listar: UsuarioEntity[] = await this.usuarioService.listarUsuarios();
-      return success(200, new BasicResponseDto("Usuários listado com sucesso", listar))
+      return success(200, new BasicResponseDto("Usuários listados com sucesso", listar))
     } catch (error: any) {
       return notFound(400, new BasicResponseDto(error.message, null));
     }
