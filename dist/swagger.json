@@ -140,9 +140,9 @@
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "API Documentação",
+		"title": "Gestão de Biblioteca",
 		"version": "1.0.0",
-		"description": "Documentação da API usando Swagger"
+		"description": "Servidor para desenvolvimento"
 	},
 	"paths": {
 		"/usuarios": {
@@ -1072,7 +1072,7 @@
 	},
 	"servers": [
 		{
-			"url": "http://localhost:3040/api",
+			"url": "http://localhost:3090/biblioteca",
 			"description": "Servidor de Desenvolvimento"
 		}
 	]

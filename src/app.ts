@@ -12,11 +12,9 @@ RegisterRoutes(apiRouter);
 
 app.use('/library', apiRouter);
 
-RegisterRoutes(app);
-
 setupSwagger(app);
 
-app.listen(PORT, () => console.log("API ONLINE na porta " + PORT));
+app.listen(PORT, '0.0.0.0', () => {console.log(`API ONLINE: http://localhost:${PORT}/library`)});
 
 // app.use((err, req, res, next) => {
 //   if (err.name === 'ValidateError') {
