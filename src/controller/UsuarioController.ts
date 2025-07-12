@@ -14,9 +14,9 @@ export class UsuarioController extends Controller {
       @Body() dto: UsuarioDto,
       @Res() success: TsoaResponse<201, BasicResponseDto>,
       @Res() notFound: TsoaResponse<400, BasicResponseDto>
-  ): Promise <void> {
+  ): Promise<void> {
       try {
-        const usuario = await this.usuarioService.(dto);
+        const usuario = await this.usuarioService.criarUsuario(dto);
         return success(201, new BasicResponseDto("Usuário criado com sucesso", usuario));
     } catch (error: any) {
         return notFound(400, new BasicResponseDto(error.message, null));
@@ -29,8 +29,10 @@ export class UsuarioController extends Controller {
       @Res() success: TsoaResponse<200, BasicResponseDto>
   ): Promise<any[]> {
     try {
-      const listar: UsuarioEntity[] = await this.usuarioService.listarUsuario();
+      const listar: UsuarioEntity[] = await this.usuarioService.listarUsuarios();
       return success(200, new BasicResponseDto("Usuários listado com sucesso", listar))
+    } catch (error: any) {
+      return notFound(400, new BasicResponseDto(error.message, null));
     }
   }
 
@@ -41,7 +43,7 @@ export class UsuarioController extends Controller {
     @Res() notFound: TsoaResponse<404, BasicResponseDto>
   ): Promise <void> {
     try {
-      const usuario = await this.usuarioService.buscarPorId(id);
+      const usuario = await this.usuarioService.buscarUsuarioById(id);
       return success(200, new BasicResponseDto("Usuário achado com sucesso", usuario));
     } catch (error: any) {
       return notFound(404, new BasicResponseDto(error.message, null));
@@ -50,13 +52,12 @@ export class UsuarioController extends Controller {
 
   @Put()
   async atualizarUsuario(
-    @Path() id: number,
     @Body() dto: UsuarioDto,
     @Res() success: TsoaResponse<200, BasicResponseDto>,
     @Res() notFound: TsoaResponse<400, BasicResponseDto>
   ): Promise <void> {
     try {
-      const atualizado = await this.usuarioService.atualizarUsuario(id, dto);
+      const atualizado = await this.usuarioService.atualizarUsuario(dto);
       return success(200, new BasicResponseDto("Usuário atualizado com sucesso", atualizado));
     } catch (error: any) {
       return notFound(400, new BasicResponseDto(error.message, null));
@@ -70,7 +71,7 @@ export class UsuarioController extends Controller {
     @Res() notFound: TsoaResponse<400, BasicResponseDto>
   ): Promise <void> {
     try {
-      const usuario = await this.usuarioService.removerUsuario(id);
+      const usuario = await this.usuarioService.deletarUsuario(id);
       return success(200, new BasicResponseDto("Usuário removido com sucesso", usuario));
     } catch (error: any) {
       return notFound(400, new BasicResponseDto(error.message, undefined));
