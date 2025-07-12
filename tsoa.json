@@ -9,13 +9,13 @@
     "specVersion": 3,
     "spec": {
       "info": {
-        "title": "Gestão de Biblioteca",
+        "title": "API Documentação",
         "version": "1.0.0",
-        "description": "Servidor para desenvolvimento"
+        "description": "Documentação da API usando Swagger"
       },
       "servers": [
         {
-          "url": "http://localhost:3090/biblioteca",
+          "url": "http://localhost:3090/library",
           "description": "Servidor de Desenvolvimento"
         }
       ]

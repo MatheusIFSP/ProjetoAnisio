@@ -102,7 +102,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "atualizarUsuario", null);
 __decorate([
-    (0, tsoa_1.Delete)(),
+    (0, tsoa_1.Delete)("{id}"),
     __param(0, (0, tsoa_1.Path)()),
     __param(1, (0, tsoa_1.Res)()),
     __param(2, (0, tsoa_1.Res)()),
