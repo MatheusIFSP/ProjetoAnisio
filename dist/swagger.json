@@ -140,7 +140,7 @@
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "API Documentação",
+		"title": "Gestão de Biblioteca",
 		"version": "1.0.0",
 		"description": "Documentação da API usando Swagger"
 	},
